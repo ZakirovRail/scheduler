@@ -99,23 +99,72 @@ class CreatDB:
 class DataWork:
     def get_accounts_info(self):
         """
-        for admin account only
+        Get the information about all accaunts in the DB. For admin account only
         :return:
         """
         pass
 
-    def get_tasks_info(self):
+    def show_info(id_task):
         """
         get an information about current tasks for a logged user
         :return:
         """
+        id_task = id_task
         pass
 
-    def add_new_task(self):
+    def create_new_task(self):
         """
         To add a new task for a current account
         :return:
         """
+        pass
+
+    def check_login(self, login_name, password):
+        """
+        the method to check if login name presents in the DB
+        :return:
+        """
+        pass
+
+    def show_all_user(self, user_name):
+        """
+        the method which will return all existing tasks for a user
+        :return:
+        """
+        pass
+
+    def show_all_tasks_admin(self):
+        """
+        the method which will return all existing tasks. For admin account only
+        :return:
+        """
+        pass
+
+    def all_active_for_admin(self):
+        pass
+
+    def all_active_for_user(self):
+        pass
+
+    def show_completed_for_all(self):
+        pass
+
+    def show_completed_user(self):
+        pass
+
+    def set_status_admin(self, id_task):
+        pass
+
+    def set_status_user(self, id_task):
+        pass
+
+    def delete_all_tasks(self):
+        pass
+
+    def delete_task(id_task):
+        pass
+
+    def assign_task(self, id_task, id_user):
         pass
 
 
