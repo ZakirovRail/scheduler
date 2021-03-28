@@ -72,6 +72,8 @@ def main():
                     exit_program()
             else:
                 print('some error happens during determining a user role')
+        else:
+            pass  # there is should be redirect to authorisation
 
 
 if __name__ == '__main__':
