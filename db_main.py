@@ -1,5 +1,10 @@
 import sqlite3
 import time
+import sys
+from migrations import *
+from models import Task
+from sql_queries import *
+
 """
 This file is used for:
 - Creation a new DB during deploying
@@ -8,95 +13,21 @@ This file is used for:
 - Retrieve data from a DB
 """
 
-create_task_table_command = """CREATE TABLE IF NOT EXISTS tasks (
-	id integer PRIMARY KEY,
-	task_name text NOT NULL,
-    priority text,
-    short_desc text,
-	deadline_date text,
-	repons text
-);"""
 
-create_users_table_command = """
-        CREATE TABLE IF NOT EXISTS users (
-	id integer PRIMARY KEY AUTOINCREMENT,
-	user_name text NOT NULL,
-	user_surname text NOT NULL,
-	password text NOT NULL,
-	reg_date text
-);
-"""
-
-creat_admin_account_command = """
-    INSERT INTO users(user_name, user_surname, password, reg_date)
-    VALUES ('Mainaccount', 'Mainaccount', 'Mainpassword', datetime('now'));
-"""
-
-select_all_from_users_table = """
-    SELECT * FROM users;
-"""
-
-
-class CreatDB:
-    """
-    This class for creating a new DB and creating a default admin account
-    """
-    def __init__(self):
-        pass
-
-    def create_connection(db_file):
-        conn = None
+class BaseDB:
+    def __init__(self, db_file):
         try:
-            conn = sqlite3.connect(db_file)
-            return conn
+            self.conn = sqlite3.connect(db_file)
         except Exception as e:
             print('print from create_connection', e)
-        return conn
-
-    def create_tasks_table(conn, create_task_table_command):
-        """
-        create a new DB SQLite for tasks
-        :return:
-        """
-        try:
-            c = conn.cursor()
-            c.execute(create_task_table_command)
-        except Exception as e:
-            print('print from create_tasks_table', e)
-
-    def creat_users_table(conn, create_users_table_command):
-        """
-        create a new DB SQLite for users
-        :return:
-        """
-        try:
-            c = conn.cursor()
-            c.execute(create_users_table_command)
-        except Exception as e:
-            print('print from creat_users_table', e)
-
-    def create_admin_account(conn, creat_admin_account_command):
-        """
-        create a default admin account during deploying a new DB
-        :return:
-        """
-        try:
-            c = conn.cursor()
-            c.execute(creat_admin_account_command)
-            print(creat_admin_account_command)
-        except Exception as e:
-            print('print from create_admin_account', e)
-
-    def select_all_from_users_table(conn, select_all_from_users_table):
-        try:
-            c = conn.cursor()
-            print(select_all_from_users_table)
-            return c.execute(select_all_from_users_table)
-        except Exception as e:
-            print('print from select_all_from_users_table', e)
+            sys.exit(1)
 
 
-class DataWork:
+class DataWork(BaseDB):
+
+    def __init__(self, db_file):
+        super().__init__(db_file)
+
     def get_accounts_info(self):
         """
         Get the information about all accaunts in the DB. For admin account only
@@ -112,12 +43,36 @@ class DataWork:
         id_task = id_task
         pass
 
-    def create_new_task(self):
+    def create_new_task(self, task: Task):
         """
         To add a new task for a current account
         :return:
         """
-        pass
+        local_id = None
+        try:
+            c = self.conn.cursor()
+            c.execute(creat_new_task_command, [task.title, task.short_desc, task.detailed_desc, task.assigned_to,
+                                               task.date_creation, task.deadline, task.status])
+            local_id = c.fetchone()[0]
+            self.conn.commit()
+            print(creat_new_task_command)
+        except Exception as e:
+            print('print from create_new_task', e)
+        return local_id
+
+    def show_all_tasks(self):
+        """
+        the method which will return all existing tasks. For admin account only
+        :return:
+        """
+        list_tasks = []
+        try:
+            c = self.conn.cursor()
+            c.execute(show_all_users_tasks)
+            list_tasks = c.fetchall()
+        except Exception as e:
+            print('print from shoq_all_tasks', e)
+        return list_tasks
 
     def check_login(self, login_name, password):
         """
@@ -129,13 +84,6 @@ class DataWork:
     def show_all_user(self, user_name):
         """
         the method which will return all existing tasks for a user
-        :return:
-        """
-        pass
-
-    def show_all_tasks_admin(self):
-        """
-        the method which will return all existing tasks. For admin account only
         :return:
         """
         pass
@@ -167,9 +115,18 @@ class DataWork:
     def assign_task(self, id_task, id_user):
         pass
 
+    def select_all_from_users_table(conn, select_all_from_users_table):
+        try:
+            c = conn.cursor()
+            print(select_all_from_users_table)
+            return c.execute(select_all_from_users_table)
+        except Exception as e:
+            print('print from select_all_from_users_table', e)
+
 
 if __name__ == '__main__':
     CreatDB.creat_users_table(CreatDB.create_connection('scheduler.db'), create_users_table_command)
     CreatDB.create_tasks_table(CreatDB.create_connection('scheduler.db'), create_task_table_command)
-    CreatDB.create_admin_account(CreatDB.create_connection('scheduler.db'), creat_admin_account_command)  # Failed for creating admin account. Why?
+    CreatDB.create_admin_account(CreatDB.create_connection('scheduler.db'),
+                                 creat_admin_account_command)  # Failed for creating admin account. Why?
     CreatDB.select_all_from_users_table(CreatDB.create_connection('scheduler.db'), select_all_from_users_table)
