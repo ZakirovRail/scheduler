@@ -1,19 +1,7 @@
-"""
-Task contains:
-- Name/Title
-- Short description
-- Detailed description
-- Assigned to
-- Date of creation
-- Deadline
-- Status
-"""
 import datetime
 from abc import ABC
 from typing import List
-
-from db_main import DataWork
-
+from db_main_com import DataWork
 from tabulate import tabulate
 
 
@@ -58,10 +46,10 @@ class User(BaseModel):
             for column in columns:
                 if column in task:
                     print(f'Column name: {column}, column value: {task[column]}')
-            # print(f'id: {task["id"]}, title: {title}, short_desc:{short_desc}, detailed_desc:{detailed_desc}, assigned_to:{assigned_to},'
+            # print(f'id: {task["id"]}, title: {title}, short_desc:{short_desc},
+            # detailed_desc:{detailed_desc}, assigned_to:{assigned_to},'
             #       f'date_creation:{date_creation}, deadline:{deadline}, status:{status}')
             # print(tabulate(task, headers = columns))
-
 
     def show_completed(self):
         pass
@@ -87,3 +75,9 @@ class User(BaseModel):
 
     def edit_task(self):
         pass
+
+
+if __name__ == '__main__':
+    BaseModel()
+    # Task()
+    # User()

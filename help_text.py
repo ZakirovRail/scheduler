@@ -13,6 +13,7 @@ admin_instruction = """
 """
 
 user_instruction = """
+Hello, please enter the appropriate command:
 1. To creat a new task enter 'create': 
 2. To display all existing tasks enter 'show': 
 3. To display only active tasks enter 'active': 

@@ -24,16 +24,43 @@ creat_admin_account_command = """
     VALUES ('Mainaccount', 'Mainaccount', 'Mainpassword', datetime('now'));
 """
 
-select_all_from_users_table = """
-    SELECT * FROM users;
-"""
-
 
 creat_new_task_command = """
         INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
     VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s');
 """
 
+COLLUMNS = ['id', 'title', 'short_desc', 'detailed_desc', 'assigned_to', 'date_creation', 'deadline', 'status']
+
 show_all_users_tasks = """
     SELECT * FROM tasks;
+"""
+
+show_all_active_tasks = """
+    SELECT * FROM tasks where status in ('New', 'In Progress');
+"""
+
+show_completed_tasks_command = """
+    SELECT * FROM tasks where status in ('Closed');
+"""
+
+delete_all_tasks_command = """
+    DELETE FROM tasks;
+"""
+
+data_seeding_task_command_1 = """
+    INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
+    VALUES ('Default Task', 'A default task for testing DB', 'Some detailed description for a detailed task', 
+    'User', datetime('now'), '31.12.2021', 'New');
+"""
+data_seeding_task_command_2 = """
+    INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
+    VALUES ('Default Task_2', 'A default task for testing DB_2', 'Some detailed description for a detailed task_2', 
+    'User', datetime('now'), '25.12.2021', 'In Progress');
+"""
+
+data_seeding_task_command_3 = """
+    INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
+    VALUES ('Default Task_2', 'A default task for testing DB_2', 'Some detailed description for a detailed task_2', 
+    'User', datetime('now'), '01.12.2021', 'Closed');
 """
