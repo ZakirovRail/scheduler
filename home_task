@@ -1,5 +1,8 @@
-1. Debug complete classes and methods
-2. write method for data seeding for default tasks (1-2)  - independent class for data seeding.
-3. main_2 - write logic for "show" command
+1. show info - to complete
 
-! day in advance send to Oleg.
+2. to complete in the main:
+    elif action == 'show info <id_task>':
+    elif action == 'completed':
+    elif action == 'active':
+
+3. set_status  - complete (+ write sql request)
