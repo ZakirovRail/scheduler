@@ -46,11 +46,11 @@ class Task(BaseModel):
 
     @staticmethod
     def print_tasks(list_tasks):
-        # print(tabulate(list_tasks, headers=COLLUMNS))
+        print(tabulate(list_tasks, headers=COLLUMNS))
         for task_item in list_tasks:
-            task_item.print_one_tasks()
+            task_item.print_one_task()
 
-    def print_one_tasks(self, is_short_view=True):
+    def print_one_task(self, is_short_view=True):
         if is_short_view:
             print(f'The id of the task is: {self.id}')
             print(f'The title of the task is: {self.title}')

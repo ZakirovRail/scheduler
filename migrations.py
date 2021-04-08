@@ -79,7 +79,8 @@ if __name__ == '__main__':
     seeding.data_seeding()
 
     work_data = DataWork(settings.DB_NAME)
-    work_data.show_all_tasks()
-    work_data.all_active_tasks()
-    work_data.show_completed_tasks()
-    work_data.delete_all_tasks()
+    # work_data.show_info(1)
+    # work_data.show_all_tasks()
+    # work_data.all_active_tasks()
+    # work_data.show_completed_tasks()
+    # work_data.delete_all_tasks()

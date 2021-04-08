@@ -1,8 +1,10 @@
-1. show info - to complete
+1. show info - to complete - DONE
 
-2. to complete in the main:
-    elif action == 'show info <id_task>':
-    elif action == 'completed':
-    elif action == 'active':
+2. to complete in the main_2:
+    elif action == 'show info <id_task>': DONE
+    elif action == 'completed': DONE
+    elif action == 'active': DONE
 
-3. set_status  - complete (+ write sql request)
+3. set_status  - complete (+ write sql request) - DONE
+
+additionally done - 'exit'

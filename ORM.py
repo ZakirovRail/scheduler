@@ -1,8 +1,8 @@
 from tabulate import tabulate
 
 from db_main_com import BaseDB
-from sql_queries import COLLUMNS, delete_all_tasks_command, show_completed_tasks_command, show_all_active_tasks, \
-    show_all_users_tasks, creat_new_task_command
+from sql_queries import COLLUMNS, delete_all_tasks_command, show_completed_tasks_command, \
+    show_all_active_tasks_command, show_all_users_tasks_command, creat_new_task_command, show_task_info_command
 
 
 class DataWork(BaseDB):
@@ -10,13 +10,16 @@ class DataWork(BaseDB):
     def __init__(self, db_file):
         super().__init__(db_file)
 
-    def show_info(self, id_task):
-    #     """
-    #     get an information about current tasks for a logged user
-    #     :return:
-    #     """
-    #     id_task = id_task
-        pass
+    def show_info(self, task_id):
+        task_id = task_id
+        task_info = []
+        try:
+            c = self.conn.cursor()
+            c.execute("SELECT * FROM tasks where id=(?)", (task_id, ))
+            task_info = c.fetchall()
+        except Exception as e:
+            print('print from show_info', e)
+        return print(tabulate(task_info, headers=COLLUMNS), '\n')
 
     def create_new_task(self, task):
         """
@@ -43,17 +46,17 @@ class DataWork(BaseDB):
         list_tasks = []
         try:
             c = self.conn.cursor()
-            c.execute(show_all_users_tasks)
+            c.execute(show_all_users_tasks_command)
             list_tasks = c.fetchall()
         except Exception as e:
             print('print from show_all_tasks', e)
-        return list_tasks
+        return print(tabulate(list_tasks, headers=COLLUMNS), '\n')
 
     def all_active_tasks(self):
         list_active_tasks = []
         try:
             c = self.conn.cursor()
-            c.execute(show_all_active_tasks)
+            c.execute(show_all_active_tasks_command)
             list_active_tasks = c.fetchall()
         except Exception as e:
             print('print from all_active_tasks', e)
@@ -69,8 +72,17 @@ class DataWork(BaseDB):
             print('print from show_completed_tasks', e)
         return print(tabulate(list_completed_tasks, headers=COLLUMNS), '\n')
 
-    def set_status(self, id_task):
-        pass
+    def set_status(self, task_id, new_status):
+        task_id = task_id
+        status = new_status
+        # task_info = []
+        try:
+            c = self.conn.cursor()
+            c.execute("UPDATE tasks SET status = (?) where id = (?);", (status, task_id, ))
+            self.conn.commit()
+            # task_info = c.fetchall()
+        except Exception as e:
+            print('print from set_status', e)
 
     def delete_all_tasks(self):
         try:

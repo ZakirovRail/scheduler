@@ -32,11 +32,11 @@ creat_new_task_command = """
 
 COLLUMNS = ['id', 'title', 'short_desc', 'detailed_desc', 'assigned_to', 'date_creation', 'deadline', 'status']
 
-show_all_users_tasks = """
+show_all_users_tasks_command = """
     SELECT * FROM tasks;
 """
 
-show_all_active_tasks = """
+show_all_active_tasks_command = """
     SELECT * FROM tasks where status in ('New', 'In Progress');
 """
 
@@ -44,9 +44,15 @@ show_completed_tasks_command = """
     SELECT * FROM tasks where status in ('Closed');
 """
 
+show_task_info_command = """
+    SELECT * FROM tasks where id=(?);
+    
+"""
+
 delete_all_tasks_command = """
     DELETE FROM tasks;
 """
+
 
 data_seeding_task_command_1 = """
     INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
