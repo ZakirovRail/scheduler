@@ -4,10 +4,32 @@ from models_db import Task
 from help_text import user_instruction
 import sys
 from settings import VALID_STATUSES, DB_NAME
+import logging
+
+logger = logging.getLogger('scheduler')
 
 
 def main():
     work = DataWork(DB_NAME)
+    list_tasks = work.show_all_tasks(False)
+    logger.debug(f'The following list_tasks - {list_tasks}')
+    login_list = []
+    current_user = None
+
+    while True:
+        login = str(input('Enter your login'))
+        if login in login_list:
+            for _ in range(3):
+                password = (input('Enter your password'))
+                if hash.password == hash.stored_password(login):
+                    current_user = get_user(login)
+                    break
+                else:
+                    print('You entered a wrong password. Try again')
+        if current_user is None:
+            print('User is not defined, the session will be closed')
+            sys.exit(1)
+
     while True:
         print(user_instruction)
         action = input('Your command: ')
@@ -21,11 +43,14 @@ def main():
                 print("error happened during creating a new task")
         elif action == 'show':
             print(f'You selected the {action} command ')
+            logger.debug(f'The "show" command were selected')
             try:
                 list_tasks = work.show_all_tasks()
-                Task.print_tasks(list_tasks)
-            except:
-                print("error happened")
+                # Task.print_tasks(list_tasks)
+                logger.debug(f'The "show" command were selected')
+            except Exception as e:
+                logger.error(f'Error happened during showing all records - {str(e)}')
+                logger.error(f'Error happened during showing all records - {repr(e)}')
         elif action == 'active':
             print(f'You selected the {action} command ')
             try:
@@ -44,16 +69,17 @@ def main():
             while True:
                 try:
                     task_id = input(f'You selected the {action} command, please enter a task id:  ')
-                    new_status = input(f'Please, enter a new status for the task id - {task_id}: '
-                                       f'(valid statuses are: New, In Progress, Closed): ')
-                    if new_status in VALID_STATUSES:
-                        # print(new_status)
-                        # print(settings.VALID_STATUSES)
-                        work.set_status(task_id, new_status)
+                    if int(task_id) in [int(item[0]) for item in list_tasks]:
+                        new_status = input(f'Please, enter a new status for the task id - {task_id}: '
+                                           f'(valid statuses are: New, In Progress, Closed): ')
+                        if new_status in list(Task.available_statuses.values()):
+                            work.set_status(task_id, new_status)
+                            print(f'The new status "{new_status}" were set for the task with an id - "{task_id}"')
+                        else:
+                            print('You are trying to set a wrong status for a task. Please try again.')
+                        break
                     else:
-                        print('You are trying to set a wrong status for a task')
-                    print(f'The new status "{new_status}" were set for the task with an id - "{task_id}"')
-                    break
+                        print('You are entered an not existing task id')
                 except Exception as e:
                     print('error happened for "set_status"', e)
                     task_id = input(f'You selected the {action} command, please enter a task id:  ')
@@ -61,13 +87,12 @@ def main():
                                        f'(valid statuses are: New, In Progress, Closed): ')
         elif action == 'show info':
             while True:
+                task_id = input(f'You selected the {action} command, please, enter the task id:  ')
                 try:
-                    task_id = input(f'You selected the {action} command, please, enter the task id:  ')
-                    work.show_info(task_id)
+                    work.show_info(int(task_id))
                     break
                 except Exception as e:
                     print('You entered a wrong id number, there is an error happened', e)
-                    task_id = input('Please enter an existing id of the task: ')
         elif action == 'exit':
             print(f'You selected the {action} command. Thank you. Bye!')
             break

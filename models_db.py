@@ -3,6 +3,8 @@ from abc import ABC
 from typing import List
 from ORM import DataWork
 from tabulate import tabulate
+from settings import DB_NAME
+from db_main_com import BaseDB
 
 from sql_queries import COLLUMNS
 
@@ -76,6 +78,20 @@ class User(BaseModel):
 
     def __init__(self, db_file):
         self.db_worker = DataWork(db_file)
+
+    @staticmethod
+    def list_active_users():
+        db_worker = DataWork(DB_NAME)
+        try:
+            c = db_worker.conn.cursor()
+            c.execute("SELECT * FROM users where id=(?)", (task_id, ))
+            task_info = c.fetchall()
+        except Exception as e:
+            print('print from show_info', e)
+        return print(tabulate(task_info, headers=COLLUMNS), '\n')
+
+    def is_authorised(self):
+        pass
 
     def show_all(self):
         all_tasks = self.db_worker.show_all_tasks()

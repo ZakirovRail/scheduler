@@ -46,7 +46,6 @@ show_completed_tasks_command = """
 
 show_task_info_command = """
     SELECT * FROM tasks where id=(?);
-    
 """
 
 delete_all_tasks_command = """

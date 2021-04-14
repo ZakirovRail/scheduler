@@ -38,19 +38,22 @@ class DataWork(BaseDB):
             print('print from create_new_task', e)
         return local_id
 
-    def show_all_tasks(self):
+    def show_all_tasks(self, need_print=True):
         """
         the method which will return all existing tasks. For admin account only
         :return:
         """
         list_tasks = []
+
         try:
             c = self.conn.cursor()
             c.execute(show_all_users_tasks_command)
             list_tasks = c.fetchall()
         except Exception as e:
             print('print from show_all_tasks', e)
-        return print(tabulate(list_tasks, headers=COLLUMNS), '\n')
+        if need_print:
+            print(tabulate(list_tasks, headers=COLLUMNS), '\n')
+        return list_tasks
 
     def all_active_tasks(self):
         list_active_tasks = []

@@ -3,6 +3,10 @@ from sql_queries import create_task_table_command, create_users_table_command, c
     data_seeding_task_command_1, data_seeding_task_command_2, data_seeding_task_command_3
 from db_main_com import BaseDB
 import settings
+import log_config
+import logging
+
+logger = logging.getLogger('scheduler')
 
 
 class CreatDB(BaseDB):
@@ -20,8 +24,10 @@ class CreatDB(BaseDB):
         try:
             c = self.conn.cursor()
             c.execute(create_task_table_command)
+            logger.debug(f'The "Task" table were created')
         except Exception as e:
-            print('print from create_tasks_table', e)
+            logger.critical(f'The "Task" table WAS NOT created, the following error happened - {str(e)}')
+            logger.critical(f'The "Task" table WAS NOT created, the following error happened - {repr(e)}')
 
     def creat_users_table(self):
         """
@@ -31,7 +37,9 @@ class CreatDB(BaseDB):
         try:
             c = self.conn.cursor()
             c.execute(create_users_table_command)
+            logger.debug(f'The "Users" table were created')
         except Exception as e:
+            logger.critical(f'The "Users" table WAS NOT created, the following error happened - {e}')
             print('print from creat_users_table', e)
 
     def create_admin_account(self):
@@ -42,8 +50,9 @@ class CreatDB(BaseDB):
         try:
             c = self.conn.cursor()
             c.execute(creat_admin_account_command)
-            print(creat_admin_account_command)
+            logger.debug(f'The "Admin" table were created')
         except Exception as e:
+            logger.critical(f'The "Admin" table WAS NOT created, the following error happened - {e}')
             print('print from create_admin_account', e)
 
 

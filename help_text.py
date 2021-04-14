@@ -21,4 +21,5 @@ Hello, please enter the appropriate command:
 5. To set up a status (New, In_Progress, Done) for a task enter 'set status': 
 6. To show an information about a task, enter 'show info'
 7. To exit, enter 'exit':
+
 """
