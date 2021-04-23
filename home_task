@@ -1,12 +1,12 @@
-1. Create a new EDIT method for ORM.DataWork (include set-status logic)
-For a value of each filed ask left as it is (by RETURN key) OR to enter a new value.
+1. Create a new EDIT method for ORM.DataWork (include set-status logic) - DONE
+For a value of each filed ask left as it is (by RETURN key) OR to enter a new value - NOT DONE
 
-2. Create a new DELETE method for ORM.DataWork
+2. Create a new DELETE method for ORM.DataWork - DONE
 expand help_text
 
-3. Make data seeding for Users table - use sha256 (hashlib.sha256) - three users (active or not + add filed is_active)
+3. Make data seeding for Users table - use sha256 (hashlib.sha256) - three users (active or not + add filed is_active) - DONE
 OR Make data seeding for Users table - use MD5 - just take a look how it works.
 
-4. Cover by Logging all methods
+4. Cover by Logging all methods - DONE
 
 5* Write method CREATE_USER (db_main_com.User)

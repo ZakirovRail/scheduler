@@ -1,7 +1,7 @@
 import logging
 
 logger = logging.getLogger('scheduler')
-_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(module)s - %(message)s - %(lineno)d')
+_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s - %(module)s - %(lineno)d')
 
 
 fh = logging.FileHandler('scheduler_log.log', encoding='utf-8')

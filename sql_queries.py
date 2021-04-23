@@ -69,3 +69,18 @@ data_seeding_task_command_3 = """
     VALUES ('Default Task_2', 'A default task for testing DB_2', 'Some detailed description for a detailed task_2', 
     'User', datetime('now'), '01.12.2021', 'Closed');
 """
+
+data_seeding_user_command_1 = """
+    INSERT INTO users (user_name, user_surname, password, reg_date)
+    VALUES ('User_name_1', 'User_surname_1', 'Password_1', '2019-01-01');
+"""
+
+data_seeding_user_command_2 = """
+    INSERT INTO users (user_name, user_surname, password, reg_date)
+    VALUES ('User_name_2', 'User_surname_2', 'Password_2', '2020-01-01');
+"""
+
+data_seeding_user_command_3 = """
+    INSERT INTO users (user_name, user_surname, password, reg_date)
+    VALUES ('User_name_3', 'User_surname_3', 'Password_3', '2021-01-01');
+"""

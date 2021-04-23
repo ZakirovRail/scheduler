@@ -5,8 +5,10 @@ from ORM import DataWork
 from tabulate import tabulate
 from settings import DB_NAME
 from db_main_com import BaseDB
-
+import logging
 from sql_queries import COLLUMNS
+
+logger = logging.getLogger('scheduler')
 
 
 class BaseModel(ABC):
@@ -40,8 +42,14 @@ class Task(BaseModel):
         while True:
             try:
                 self.deadline = datetime.datetime.strptime(task_deadline, "%d.%m.%Y")
+                logger.debug(f'The following data for a task received: /n'
+                             f'title - {self.title}/n'
+                             f'Short description - {self.short_desc}/n'
+                             f'Detailed description - {self.detailed_desc}/n'
+                             f'Deadline - {task_deadline}/n')
                 break
-            except:
+            except Exception as e:
+                logger.critical(f'The wrong format for data were entered ({task_deadline})')
                 task_deadline = input('Please enter a correct format of data, which is  - dd.mm.yyyy')
         self.date_creation = datetime.datetime.now()
         self.status = 1
@@ -78,6 +86,7 @@ class User(BaseModel):
 
     def __init__(self, db_file):
         self.db_worker = DataWork(db_file)
+        logger.debug(f'The self.db_worker were initialized as: {db_file}')
 
     @staticmethod
     def list_active_users():
@@ -86,8 +95,10 @@ class User(BaseModel):
             c = db_worker.conn.cursor()
             c.execute("SELECT * FROM users where id=(?)", (task_id, ))
             task_info = c.fetchall()
+            logger.debug(f'The data from DB for active users is following: /n'
+                         f'{task_info}')
         except Exception as e:
-            print('print from show_info', e)
+            logger.critical('print from show_info', e)
         return print(tabulate(task_info, headers=COLLUMNS), '\n')
 
     def is_authorised(self):
@@ -97,6 +108,7 @@ class User(BaseModel):
         all_tasks = self.db_worker.show_all_tasks()
         # columns = ["id", "title", "short_desc", "detailed_desc", "assigned_to", "date_creation", "deadline", "status"]
         columns = ["title", "short_desc", "detailed_desc", "assigned_to", "date_creation", "deadline", "status"]
+        logger.debug(f'The list of all task is following: {all_tasks}')
         for task in all_tasks:
             print(f'Task number: {task["id"]}')
             for column in columns:
@@ -107,15 +119,6 @@ class User(BaseModel):
             #       f'date_creation:{date_creation}, deadline:{deadline}, status:{status}')
             # print(tabulate(task, headers = columns))
 
-    def show_completed(self):
-        pass
-
-    def show_active(self):
-        pass
-
-    def show_task(self):
-        pass
-
     def create_task(self, conn):
         name = input('Enter a name for a new task: ')
         short_desc = input('Enter a short description for a new task: ')
@@ -124,13 +127,8 @@ class User(BaseModel):
 
         new_task = Task(name, short_desc, detailed_desc, deadline)
         new_task.id = self.db_worker.create_new_task(new_task)
+        logger.debug(f'The task will be added: {new_task}')
         self.tasks.append(new_task)
-
-    def change_status(self):
-        pass
-
-    def edit_task(self):
-        pass
 
 
 if __name__ == '__main__':

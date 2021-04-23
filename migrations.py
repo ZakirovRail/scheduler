@@ -1,10 +1,13 @@
 from ORM import DataWork
 from sql_queries import create_task_table_command, create_users_table_command, creat_admin_account_command, \
-    data_seeding_task_command_1, data_seeding_task_command_2, data_seeding_task_command_3
+    data_seeding_task_command_1, data_seeding_task_command_2, data_seeding_task_command_3, data_seeding_user_command_1,\
+    data_seeding_user_command_2, data_seeding_user_command_3
+
 from db_main_com import BaseDB
 import settings
 import log_config
 import logging
+import hashlib
 
 logger = logging.getLogger('scheduler')
 
@@ -63,10 +66,9 @@ class DataSeeding(BaseDB):
     def __init__(self, db_file):
         super().__init__(db_file)
 
-    def data_seeding(self):
+    def data_seeding_tasks(self):
         """
-        create a new DB SQLite for tasks
-        :return:
+        to fill a table "tasks" with a test data
         """
         try:
             c = self.conn.cursor()
@@ -74,20 +76,52 @@ class DataSeeding(BaseDB):
             c.execute(data_seeding_task_command_2)
             c.execute(data_seeding_task_command_3)
             self.conn.commit()
+            logger.debug(f'Data seeding for the "Tasks" table were done')
         except Exception as e:
-            print('print from create_tasks_table', e)
+            logger.critical('Failed data seeding, error print from create_tasks_table', e)
+
+    def data_seeding_users(self):
+        """
+        to fill a table "users" with a test data
+        """
+        user_name = 'John'
+        user_surname = 'Connor'
+        reg_date = '1985-01-01'
+
+        hash_alg = hashlib.sha256()
+        pass_to_encrypt = 'Secret'
+        encoded_password = pass_to_encrypt.encode()
+        hash_alg.update(encoded_password)
+        hex_pass = hash_alg.hexdigest()
+
+        users_data = (user_name, user_surname, hex_pass, reg_date)
+        # print(type(hex_pass))
+        # print(hex_pass)
+        # print(users_data)
+        # print(*users_data)
+        try:
+            c = self.conn.cursor()
+            c.execute(data_seeding_user_command_1)
+            c.execute(data_seeding_user_command_2)
+            c.execute(data_seeding_user_command_3)
+            c.execute("INSERT into users (user_name, user_surname, password, reg_date) VALUES (?,?,?,?)", (users_data))
+            self.conn.commit()
+            logger.debug(f'Data seeding for the "Users" table were done')
+        except Exception as e:
+            logger.critical('Failed data seeding for users table, error print from create_tasks_table', e)
 
 
 if __name__ == '__main__':
-
     create_db = CreatDB(settings.DB_NAME)
     create_db.create_tasks_table()
     create_db.creat_users_table()
 
     seeding = DataSeeding(settings.DB_NAME)
-    seeding.data_seeding()
+    seeding.data_seeding_tasks()
+    seeding.data_seeding_users()
 
-    work_data = DataWork(settings.DB_NAME)
+
+    # work_data = DataWork(settings.DB_NAME)
     # work_data.show_info(1)
     # work_data.show_all_tasks()
     # work_data.all_active_tasks()
