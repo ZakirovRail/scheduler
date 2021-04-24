@@ -1,10 +1,11 @@
 from ORM import DataWork
-from models_db import Task
-# from utils import exit_program
+from models_db import Task, User
+from utils import exit_program, encode_password
 from help_text import user_instruction
 import sys
 from settings import VALID_STATUSES, DB_NAME
 import logging
+import actions
 
 logger = logging.getLogger('scheduler')
 
@@ -14,21 +15,7 @@ def main():
     list_tasks = work.show_all_tasks(False)
     logger.debug(f'The following list_tasks - {list_tasks}')
     login_list = []
-    current_user = None
-
-    # while True:
-    #     login = str(input('Enter your login'))
-    #     if login in login_list:
-    #         for _ in range(3):
-    #             password = (input('Enter your password'))
-    #             if hash.password == hash.stored_password(login):
-    #                 current_user = get_user(login)
-    #                 break
-    #             else:
-    #                 print('You entered a wrong password. Try again')
-    #     if current_user is None:
-    #         print('User is not defined, the session will be closed')
-    #         sys.exit(1)
+    current_user = actions.authorisation()
 
     while True:
         print(user_instruction)
@@ -162,6 +149,9 @@ def main():
                     break
                 except Exception as e:
                     logger.critical('error happened for "delete"', e)
+        elif action == 'logout':
+            print('You will be logout')
+            current_user = actions.authorisation()
         elif action == 'exit':
             print(f'You selected the {action} command. Thank you. Bye!')
             logger.debug(f'The command to exit were invoked')

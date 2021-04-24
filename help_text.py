@@ -23,5 +23,6 @@ Hello, please enter the appropriate command:
 7. To edit a task, enter 'edit':
 8. To delete all tasks (for Admin only): select "delete all": 
 9. To delete a specific task, select "delete": 
-10. To exit, enter "exit":
+10. To logout, enter "logout":
+11. To exit, enter "exit":
 """
