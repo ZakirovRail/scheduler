@@ -1,12 +1,25 @@
-1. actions.tasks - to put all actions here
-2. make "validators" module(folder) - create some rules for validations - for password, user_name, email (add to DB filed "email")
-for each three fields make validators.
-
+1. actions.tasks - to put all actions here - DONE
+2. add to DB filed "email" field - DONE
+3. make "validators" module(folder) - create some rules for validations - for password, user_name, email
+for each three fields make validators. - PARTIALLY
 - 8 chars, special chars, digits.
+4. Add logging
 
-3. Add logging
+
 
 Questions:
+1. main_2 - # ??? Как поступить с циклом While???
+2. После регистрации нового пользователя появления логов в консоли
+3. Импорты
+
+
+Comments for future:
 1. Start work with Git - PR
 2. Optimisation with SQLite - %s
 3. Create a UI for that console program, to make a UI program
+
+
+
+
+
+
