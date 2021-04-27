@@ -1,6 +1,9 @@
-import sys, time
+import sys
 from models_db import User
 from utils import encode_password
+import logging
+
+logger = logging.getLogger('scheduler')
 
 
 def authorisation():
