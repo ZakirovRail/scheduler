@@ -28,3 +28,6 @@ def digits_char_password(users_password):
     """
     pass
 
+
+def skip():
+    pass
