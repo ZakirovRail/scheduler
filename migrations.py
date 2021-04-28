@@ -7,7 +7,6 @@ from db_main_com import BaseDB
 import settings
 import log_config
 import logging
-import hashlib
 from utils import encode_password
 
 logger = logging.getLogger('scheduler')

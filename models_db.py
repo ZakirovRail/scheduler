@@ -124,8 +124,6 @@ class User(BaseModel):
             c.execute("Select * from users where user_name=(?);", (login_name, ))
             login_info = c.fetchone()
             logger.debug(f'The login selected from DB: {login_info}')
-            # print(type(login_info))
-            # print(login_info)
         except Exception as e:
             logger.critical('Error during getting login from DB', e)
             return None
@@ -146,11 +144,9 @@ class User(BaseModel):
         # print(user_object.__dict__)
         return user_object
 
-    # def is_authorised(self):
-    #     if self.is_auth is None:
-    #         return False
-    #     else:
-    #         return self.is_auth
+    def get_users_tasks(self):
+        list_tasks = self.db_worker.show_all_tasks(user_id=self.user_name)
+        return list_tasks
 
     def show_all(self):
         all_tasks = self.db_worker.show_all_tasks()

@@ -2,6 +2,9 @@ import sys
 from models_db import User
 from utils import encode_password
 import logging
+import sys
+
+sys.path.append('../')
 
 logger = logging.getLogger('scheduler')
 

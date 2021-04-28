@@ -29,21 +29,21 @@ creat_admin_account_command = """
 
 creat_new_task_command = """
         INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
-    VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s');
+    VALUES (%s, %s, %s, %s, %s, %s, %s);
 """
 
 COLLUMNS = ['id', 'title', 'short_desc', 'detailed_desc', 'assigned_to', 'date_creation', 'deadline', 'status']
 
 show_all_users_tasks_command = """
-    SELECT * FROM tasks;
+    SELECT * FROM tasks where assigned_to = (?);
 """
 
 show_all_active_tasks_command = """
-    SELECT * FROM tasks where status in ('New', 'In Progress');
+    SELECT * FROM tasks where status in ('New', 'In Progress') and assigned_to = (?);
 """
 
 show_completed_tasks_command = """
-    SELECT * FROM tasks where status in ('Closed');
+    SELECT * FROM tasks where status in ('Closed') and assigned_to = (?);
 """
 
 show_task_info_command = """
@@ -51,7 +51,7 @@ show_task_info_command = """
 """
 
 delete_all_tasks_command = """
-    DELETE FROM tasks;
+    DELETE FROM tasks where assigned_to=(?);
 """
 
 

@@ -5,12 +5,12 @@ for each three fields make validators. - PARTIALLY
 - 8 chars, special chars, digits.
 4. Add logging
 
-
+ohmyz.sh - about plugin
 
 Questions:
-1. main_2 - # ??? Как поступить с циклом While???
 2. После регистрации нового пользователя появления логов в консоли
 3. Импорты
+
 
 
 Comments for future:
@@ -21,5 +21,9 @@ Comments for future:
 
 
 
+Notes (Oleg):
+1. Imports inside the project
 
 
+To Do:
+1. Rewrite DB - link ID and user_name from tables "tasks" and "users"
