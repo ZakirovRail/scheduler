@@ -2,3 +2,5 @@
 .idea
 scheduler.db
 *.log
+*.pyc
+1.py

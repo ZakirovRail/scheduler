@@ -8,6 +8,7 @@ import settings
 import log_config
 import logging
 import hashlib
+from utils import encode_password
 
 logger = logging.getLogger('scheduler')
 
@@ -87,18 +88,8 @@ class DataSeeding(BaseDB):
         user_name = 'John'
         user_surname = 'Connor'
         reg_date = '1985-01-01'
-
-        hash_alg = hashlib.sha256()
-        pass_to_encrypt = 'Secret'
-        encoded_password = pass_to_encrypt.encode()
-        hash_alg.update(encoded_password)
-        hex_pass = hash_alg.hexdigest()
-
+        hex_pass = encode_password('Secret')
         users_data = (user_name, user_surname, hex_pass, reg_date)
-        # print(type(hex_pass))
-        # print(hex_pass)
-        # print(users_data)
-        # print(*users_data)
         try:
             c = self.conn.cursor()
             c.execute(data_seeding_user_command_1)

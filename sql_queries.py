@@ -15,7 +15,9 @@ create_users_table_command = """
 	user_name text NOT NULL,
 	user_surname text NOT NULL,
 	password text NOT NULL,
-	reg_date text
+	reg_date text, 
+	email text
+	
 );
 """
 
@@ -71,16 +73,16 @@ data_seeding_task_command_3 = """
 """
 
 data_seeding_user_command_1 = """
-    INSERT INTO users (user_name, user_surname, password, reg_date)
-    VALUES ('User_name_1', 'User_surname_1', 'Password_1', '2019-01-01');
+    INSERT INTO users (user_name, user_surname, password, reg_date, email)
+    VALUES ('User_name_1', 'User_surname_1', 'Password_1', '2019-01-01', 'test@gmail.com');
 """
 
 data_seeding_user_command_2 = """
-    INSERT INTO users (user_name, user_surname, password, reg_date)
-    VALUES ('User_name_2', 'User_surname_2', 'Password_2', '2020-01-01');
+    INSERT INTO users (user_name, user_surname, password, reg_date, email)
+    VALUES ('User_name_2', 'User_surname_2', 'Password_2', '2020-01-01', 'test_2@gmail.com');
 """
 
 data_seeding_user_command_3 = """
-    INSERT INTO users (user_name, user_surname, password, reg_date)
-    VALUES ('User_name_3', 'User_surname_3', 'Password_3', '2021-01-01');
+    INSERT INTO users (user_name, user_surname, password, reg_date, email)
+    VALUES ('User_name_3', 'User_surname_3', 'Password_3', '2021-01-01', 'test_3@gmail.com');
 """

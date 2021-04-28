@@ -1,12 +1,15 @@
 import datetime
 from abc import ABC
 from typing import List
+
+import settings
 from ORM import DataWork
 from tabulate import tabulate
-from settings import DB_NAME
 from db_main_com import BaseDB
 import logging
 from sql_queries import COLLUMNS
+from settings import DB_NAME
+import utils
 
 logger = logging.getLogger('scheduler')
 
@@ -79,14 +82,26 @@ class Task(BaseModel):
 
 
 class User(BaseModel):
+    id: int
+    user_name: str
+    user_surname: str
+    password: str
+    reg_date: str
     tasks: List[Task]
-    name: str
-    short_desc: str
     db_worker: DataWork
+    is_auth: bool
 
     def __init__(self, db_file):
         self.db_worker = DataWork(db_file)
         logger.debug(f'The self.db_worker were initialized as: {db_file}')
+
+    def make_user_object(self, id, user_name, user_surname, password, reg_date):
+        self.id = id
+        self.user_name = user_name
+        self.user_surname = user_surname
+        self.password = password
+        self.reg_date = reg_date
+        self.is_auth = False
 
     @staticmethod
     def list_active_users():
@@ -101,8 +116,41 @@ class User(BaseModel):
             logger.critical('print from show_info', e)
         return print(tabulate(task_info, headers=COLLUMNS), '\n')
 
-    def is_authorised(self):
-        pass
+    @staticmethod
+    def get_user_by_login(login_name):
+        db_worker = DataWork(DB_NAME)
+        try:
+            c = db_worker.conn.cursor()
+            c.execute("Select * from users where user_name=(?);", (login_name, ))
+            login_info = c.fetchone()
+            logger.debug(f'The login selected from DB: {login_info}')
+            # print(type(login_info))
+            # print(login_info)
+        except Exception as e:
+            logger.critical('Error during getting login from DB', e)
+            return None
+        else:
+            if login_info is not None:
+                return User.serialise_user_data(login_info)
+            else:
+                logging.debug(f'Wrong user name - {login_name}')
+                return None
+
+    @staticmethod
+    def serialise_user_data(login_info):
+        COLUMNS = ['id', 'user_name', 'user_surname', 'password', 'reg_date']
+        user_dict_name = dict(zip(COLUMNS, login_info))
+        logger.debug(f'The user_dict_name: {user_dict_name}')
+        user_object = User(settings.DB_NAME)
+        user_object.make_user_object(**user_dict_name)
+        # print(user_object.__dict__)
+        return user_object
+
+    # def is_authorised(self):
+    #     if self.is_auth is None:
+    #         return False
+    #     else:
+    #         return self.is_auth
 
     def show_all(self):
         all_tasks = self.db_worker.show_all_tasks()
@@ -130,6 +178,18 @@ class User(BaseModel):
         logger.debug(f'The task will be added: {new_task}')
         self.tasks.append(new_task)
 
+    @staticmethod
+    def create_new_user(name, surname, password):
+        user = User(settings.DB_NAME)
+        users_data = (name, surname, utils.encode_password(password), datetime.datetime.now())
+        c = user.db_worker.conn.cursor()
+        c.execute("INSERT into users (user_name, user_surname, password, reg_date) VALUES (?,?,?,?)", users_data)
+        user.db_worker.conn.commit()
+        new_user = User.get_user_by_login(name)
+        return new_user
+
 
 if __name__ == '__main__':
-    pass
+    User.get_user_by_login('John')
+    User.create_new_user('Mike2', 'Surface2', 'Secret3')
+
