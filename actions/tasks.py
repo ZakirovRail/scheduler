@@ -52,6 +52,7 @@ def completed_action(current_user: User):
 
 def set_status_action(action, current_user):
     list_tasks = work.show_all_tasks(current_user.user_name)
+    print('1 !!! List of tasks for - ', list_tasks)
     while True:
         try:
             task_id = input(f'You selected the {action} command, please enter a task id:  ')
@@ -60,11 +61,8 @@ def set_status_action(action, current_user):
                                    f'(valid statuses are: New, In Progress, Closed): ')
                 logger.debug(f'A new status - {new_status} were selected for a task with id - {task_id}')
                 if new_status in list(Task.available_statuses.values()):
-                    print('List of tasks - ', Task.available_statuses.values())  # I can delete this
-                    print('Potentially a new new_status - ', new_status)  # I can delete this
-                    if task_id in [task[0] for task in list_tasks]:
-                        print('will be set new_status - ', new_status)
-                        work.set_status(task_id, new_status)
+                    if int(task_id) in [task[0] for task in list_tasks]:
+                        work.set_status(int(task_id), new_status)
                         logger.debug(f'A new status - {new_status} were set for a task with id - {task_id}')
                 else:
                     print('You are trying to set a wrong status for a task. Please try again.')
