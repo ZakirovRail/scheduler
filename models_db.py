@@ -175,11 +175,11 @@ class User(BaseModel):
         self.tasks.append(new_task)
 
     @staticmethod
-    def create_new_user(name, surname, password):
+    def create_new_user(name, surname, password, email):
         user = User(settings.DB_NAME)
-        users_data = (name, surname, utils.encode_password(password), datetime.datetime.now())
+        users_data = (name, surname, utils.encode_password(password), datetime.datetime.now(), email)
         c = user.db_worker.conn.cursor()
-        c.execute("INSERT into users (user_name, user_surname, password, reg_date) VALUES (?,?,?,?)", users_data)
+        c.execute("INSERT into users (user_name, user_surname, password, reg_date, email) VALUES (?,?,?,?,?)", users_data)
         user.db_worker.conn.commit()
         new_user = User.get_user_by_login(name)
         return new_user
