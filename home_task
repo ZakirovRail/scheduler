@@ -7,7 +7,12 @@ ohmyz.sh - about plugin
 Questions:
 2. После регистрации нового пользователя появления логов в консоли
 3. Импорты
-4. После создания новой задачи, новый статус автоматически прсиваивается "1"
+4. После создания новой задачи, новый статус автоматически прсиваивается "1" - FIXED
+5. Infinite loop for set a new status for a task - BUG - FIXED
+6. The error happens for a setting a new status for a task "error happened for "set_status" in tasks file 'tuple' object has no attribute 'id'" - FIXED
+7. Error for "show info" action - wrong task id selecting - FIXED
+
+
 
 Notes (Oleg):
 1. Imports inside the project
