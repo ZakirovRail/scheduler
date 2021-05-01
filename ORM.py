@@ -36,7 +36,7 @@ class DataWork(BaseDB):
         try:
             c = self.conn.cursor()
             new_task_tuple = (task.title, task.short_desc, task.detailed_desc, task.assigned_to, task.date_creation,
-                              task.deadline, task.status, )
+                              task.deadline, task.available_statuses[1], )
 
             c.execute(creat_new_task_command, new_task_tuple)
             print("SQL - ", c.fetchone())
