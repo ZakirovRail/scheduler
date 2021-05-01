@@ -35,10 +35,12 @@ class DataWork(BaseDB):
         local_id = None
         try:
             c = self.conn.cursor()
-            c.execute("INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)"
-                      "VALUES ((?), (?), (?), (?), (?), (?), (?))", (task.title, task.short_desc, task.detailed_desc, task.assigned_to,
-                                               task.date_creation, task.deadline, task.status, ))
-            local_id = c.fetchone()[0]
+            new_task_tuple = (task.title, task.short_desc, task.detailed_desc, task.assigned_to, task.date_creation,
+                              task.deadline, task.status, )
+
+            c.execute(creat_new_task_command, new_task_tuple)
+            print("SQL - ", c.fetchone())
+            # local_id = c.fetchone()[0]  # None is returned
             self.conn.commit()
             logger.debug(f'The new task method was invoked. The info about the task: {task}')
         except Exception as e:

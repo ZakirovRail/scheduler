@@ -29,7 +29,7 @@ creat_admin_account_command = """
 
 creat_new_task_command = """
         INSERT INTO tasks (title, short_desc, detailed_desc, assigned_to, date_creation, deadline, status)
-    VALUES (%s, %s, %s, %s, %s, %s, %s);
+    VALUES ((?), (?), (?), (?), (?), (?), (?));
 """
 
 COLLUMNS = ['id', 'title', 'short_desc', 'detailed_desc', 'assigned_to', 'date_creation', 'deadline', 'status']

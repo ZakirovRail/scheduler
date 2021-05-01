@@ -1,9 +1,6 @@
-1. actions.tasks - to put all actions here - DONE
-2. add to DB filed "email" field - DONE
-3. make "validators" module(folder) - create some rules for validations - for password, user_name, email
-for each three fields make validators. - PARTIALLY
-- 8 chars, special chars, digits.
-4. Add logging
+1. debug main_2
+2. Test all flows
+3. Add logging
 
 ohmyz.sh - about plugin
 
@@ -11,19 +8,9 @@ Questions:
 2. После регистрации нового пользователя появления логов в консоли
 3. Импорты
 
-
-
-Comments for future:
-1. Start work with Git - PR
-2. Optimisation with SQLite - %s
-3. Create a UI for that console program, to make a UI program
-
-
-
-
 Notes (Oleg):
 1. Imports inside the project
-
+2. %s
 
 To Do:
 1. Rewrite DB - link ID and user_name from tables "tasks" and "users"
