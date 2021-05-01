@@ -60,7 +60,10 @@ def set_status_action(action, current_user):
                                    f'(valid statuses are: New, In Progress, Closed): ')
                 logger.debug(f'A new status - {new_status} were selected for a task with id - {task_id}')
                 if new_status in list(Task.available_statuses.values()):
-                    if task_id in [task.id for task in list_tasks]:
+                    print('List of tasks - ', Task.available_statuses.values())  # I can delete this
+                    print('Potentially a new new_status - ', new_status)  # I can delete this
+                    if task_id in [task[0] for task in list_tasks]:
+                        print('will be set new_status - ', new_status)
                         work.set_status(task_id, new_status)
                         logger.debug(f'A new status - {new_status} were set for a task with id - {task_id}')
                 else:
@@ -71,11 +74,12 @@ def set_status_action(action, current_user):
             else:
                 logger.error(f'User entered an not existing task id - {task_id}')
         except Exception as e:
-            print('error happened for "set_status"', e)
+            print('error happened for "set_status" in tasks file', e)
+            print('should be set new_status - ', new_status, ' . And error is - ', e)
             task_id = input(f'You selected the {action} command, please enter a task id:  ')
             new_status = input(f'Please, enter a new status for the {task_id} '
                                f'(valid statuses are: New, In Progress, Closed): ')
-            logger.error(f'error happened for "set_status"')
+            logger.error(f'error happened for "set_status" - , {e}')
 
 
 def show_info_action(action, current_user: User):
@@ -83,7 +87,7 @@ def show_info_action(action, current_user: User):
     while True:
         task_id = input(f'You selected the {action} command, please, enter the task id:  ')
         try:
-            if task_id in [task.id for task in list_tasks]:
+            if int(task_id) in [task[0] for task in list_tasks]:
                 work.show_info(int(task_id), current_user.user_name)
                 logger.debug(f'The command to show info about a task were invoked')
             break
@@ -98,7 +102,7 @@ def edit_action(action, current_user):
         task_id = input(
             f'You selected the {action} command, please, enter the task id or enter the "stop" command to stop:  ')
         try:
-            if task_id in [task.id for task in list_tasks]:
+            if task_id in [task[0] for task in list_tasks]:
                 if task_id == 'stop':
                     print('You selected to stop, you will be return to a main menu')
                     break
