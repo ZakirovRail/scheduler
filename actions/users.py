@@ -2,6 +2,9 @@ import sys
 from models_db import User
 from utils import encode_password
 import logging
+import sys
+
+sys.path.append('../')
 
 logger = logging.getLogger('scheduler')
 
@@ -46,7 +49,8 @@ def register():
         if User.get_user_by_login(name) is None:
             surname = str(input('Enter your surname: '))
             password = str(input('Enter your password: '))
-            new_current_user = User.create_new_user(name, surname, password)
+            email = str(input('Enter your email: '))
+            new_current_user = User.create_new_user(name, surname, password, email)
             new_current_user.is_auth = True
             return new_current_user
         else:

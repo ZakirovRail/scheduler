@@ -124,8 +124,6 @@ class User(BaseModel):
             c.execute("Select * from users where user_name=(?);", (login_name, ))
             login_info = c.fetchone()
             logger.debug(f'The login selected from DB: {login_info}')
-            # print(type(login_info))
-            # print(login_info)
         except Exception as e:
             logger.critical('Error during getting login from DB', e)
             return None
@@ -146,11 +144,9 @@ class User(BaseModel):
         # print(user_object.__dict__)
         return user_object
 
-    # def is_authorised(self):
-    #     if self.is_auth is None:
-    #         return False
-    #     else:
-    #         return self.is_auth
+    def get_users_tasks(self):
+        list_tasks = self.db_worker.show_all_tasks(user_id=self.user_name)
+        return list_tasks
 
     def show_all(self):
         all_tasks = self.db_worker.show_all_tasks()
@@ -179,11 +175,11 @@ class User(BaseModel):
         self.tasks.append(new_task)
 
     @staticmethod
-    def create_new_user(name, surname, password):
+    def create_new_user(name, surname, password, email):
         user = User(settings.DB_NAME)
-        users_data = (name, surname, utils.encode_password(password), datetime.datetime.now())
+        users_data = (name, surname, utils.encode_password(password), datetime.datetime.now(), email)
         c = user.db_worker.conn.cursor()
-        c.execute("INSERT into users (user_name, user_surname, password, reg_date) VALUES (?,?,?,?)", users_data)
+        c.execute("INSERT into users (user_name, user_surname, password, reg_date, email) VALUES (?,?,?,?,?)", users_data)
         user.db_worker.conn.commit()
         new_user = User.get_user_by_login(name)
         return new_user
