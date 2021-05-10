@@ -1,6 +1,5 @@
-1. debug main_2 - DONE
-2. Test all flows
-3. Add logging
+1. Make main with Bootstrap framework  - create main page (index.html) and add there urls for list tasks and authorisation pages
+
 
 ohmyz.sh - about plugin
 
