@@ -2,7 +2,7 @@ import time
 import sys
 import hashlib
 import logging
-from jinja2 import Template
+from jinja2 import Template, BaseLoader, Environment, FileSystemLoader
 
 logger = logging.getLogger('scheduler')
 
@@ -31,5 +31,21 @@ def encode_password(password):
 def render_template(template, context={}):
     with open(template, 'r') as f:
         template_contain = f.read()
-    template = Template(template_contain)
-    return template.render(**context)
+    # template = Template(template_contain)
+    # return template.render(**context)
+    # rtemplate = Environment(loader=BaseLoader).from_string(template_contain)
+    # data = rtemplate.render(**context)
+    template = Environment(loader=FileSystemLoader("templates/")).from_string(template_contain)
+    html_str = template.render(**context)
+    return html_str
+
+
+def get_static(path: str):
+    # print(path)
+    with open(path[1:], 'r') as static_file:
+        read_static_file = static_file.read()
+    return read_static_file
+
+
+def do_Redirect(self):
+    pass

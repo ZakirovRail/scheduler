@@ -1,15 +1,10 @@
-1. Make main with Bootstrap framework  - create main page (index.html) and add there urls for list tasks and authorisation pages
+1. to fix POST request
+2. Созать html. страницу для авторизованного пользователя
+3. В этой странице реализовать отображение всех его задач
+4.* Подумать как хранить сессию  - как начать реализовывать?
 
-
-ohmyz.sh - about plugin
 
 Questions:
-2. После регистрации нового пользователя появления логов в консоли
-3. Импорты
-4. После создания новой задачи, новый статус автоматически прсиваивается "1" - FIXED
-5. Infinite loop for set a new status for a task - BUG - FIXED
-6. The error happens for a setting a new status for a task "error happened for "set_status" in tasks file 'tuple' object has no attribute 'id'" - FIXED
-7. Error for "show info" action - wrong task id selecting - FIXED
 
 
 
@@ -19,3 +14,11 @@ Notes (Oleg):
 
 To Do:
 1. Rewrite DB - link ID and user_name from tables "tasks" and "users"
+
+
+Ответы:
+3. Импорты - круговые импорты большая и частая проблема. Но и следить за названием файлов
+
+
+
+ohmyz.sh - about plugin
