@@ -38,7 +38,7 @@ def active_action(current_user: User):
     except Exception as e:
         logger.error(f'error happened in all_active_tasks - {repr(e)}')
     finally:
-        return
+        return # !!!!!!!!!!!!!!!!! Need to complete
 
 
 def completed_action(current_user: User):
@@ -46,13 +46,12 @@ def completed_action(current_user: User):
         work.show_completed_tasks(current_user.user_name)
         logger.debug(f'The command to display a list of completed tasks invoked')
     except Exception as e:
-        print("error happened in 'show_completed_tasks' ")
         logger.error(f'error happened in show_completed_tasks - {repr(e)}')
 
 
 def set_status_action(action, current_user):
     list_tasks = work.show_all_tasks(current_user.user_name)
-    print('1 !!! List of tasks for - ', list_tasks)
+    logger.debug(f'List of tasks for - {list_tasks}')
     while True:
         try:
             task_id = input(f'You selected the {action} command, please enter a task id:  ')
@@ -110,7 +109,7 @@ def edit_action(action, current_user):
                     print('You entered a wrong task number, session will be closed. ')
                     break
         except Exception as e:
-            print('error happened for getting a task id', e)
+            logger.critical('error happened for getting a task id - ', e)
         try:
             new_short_desc = input(
                 'Enter a new short description, enter the "stop" to break or just hit the "Enter" key: ')
@@ -121,7 +120,7 @@ def edit_action(action, current_user):
             else:
                 new_data.append(new_short_desc)
         except Exception as e:
-            print('error happened for getting a new short description', e)
+            logger.critical('error happened for getting a new short description', e)
         try:
             new_detailed_desc = input(
                 'Enter a new detailed description, enter the "stop" to break or just hit the "Enter" key:')
@@ -138,8 +137,8 @@ def edit_action(action, current_user):
             logger.critical('error happened for getting a new detailed description', e)
         try:
             work.edit_task(task_id, new_data, current_user.user_name)
-            print('the new data is: ', new_data)
-            print(f'The task with id - {task_id} were updated')
+            logger.debug(f'the new data is: {new_data}')
+            logger.debug(f'The task with id - {task_id} were updated')
             return
         except Exception as e:
             logger.critical('error happened for editing a task', e)
