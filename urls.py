@@ -2,8 +2,10 @@ from actions import *
 import logging
 
 logger = logging.getLogger('scheduler')
+
 urls_dict = [
-    {'pattern': '/main/', 'method': main_page, },
+    {'pattern': '/', 'method': main_page, },
+    # {'pattern': '/main/', 'method': main_page, },
     {'pattern': '/login/', 'method': users.login, },
     {'pattern': '/registration/', 'method': users.register, },
     {'pattern': '/create/', 'method': tasks.create_task_action, },

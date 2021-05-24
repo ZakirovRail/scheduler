@@ -1,5 +1,5 @@
 from models_db import User
-from utils import encode_password, render_template
+from utils import encode_password, render_template, Redirect
 import logging
 import sys
 
@@ -16,10 +16,13 @@ def authorisation(request):
 def login(request):
     if request['method'] == 'POST':
         current_user = User.get_user_by_login(request['POST']['login'])
+        print(current_user)
         if encode_password(request['POST']['password']) == current_user.password:
-            # current_user.is_auth = True
-            # TO DO - return to authorised user page (html page for user)
-            pass
+            # Create a session for user
+            # In Cookies save created token
+            #
+            request['session'] = token
+            return Redirect('', request)
         print('Method POST')
     elif request['method'] == 'GET':
         print('Method GET')

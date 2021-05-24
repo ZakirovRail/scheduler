@@ -32,13 +32,14 @@ def show_action(current_user: User):
 
 
 def active_action(current_user: User):
+    users_tasks = []
     try:
-        work.all_active_tasks(current_user.user_name)
+        users_tasks = work.all_active_tasks(current_user.user_name)
         logger.debug(f'The command to display a list of active tasks invoked')
     except Exception as e:
         logger.error(f'error happened in all_active_tasks - {repr(e)}')
     finally:
-        return # !!!!!!!!!!!!!!!!! Need to complete
+        return users_tasks
 
 
 def completed_action(current_user: User):

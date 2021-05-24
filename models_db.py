@@ -1,4 +1,5 @@
 import datetime
+import secrets
 from abc import ABC
 from typing import List
 
@@ -10,6 +11,7 @@ import logging
 from sql_queries import COLLUMNS
 from settings import DB_NAME
 import utils
+import time
 
 logger = logging.getLogger('scheduler')
 
@@ -183,6 +185,58 @@ class User(BaseModel):
         user.db_worker.conn.commit()
         new_user = User.get_user_by_login(name)
         return new_user
+
+
+class UsersSession(BaseModel):
+    id: int
+    user: User
+    auth_date: str
+    expires_date: datetime
+    token: str
+
+    """
+    
+    """
+
+    def __init__(self, db_file, user):
+
+        self.db_worker = DataWork(db_file)
+        c.execute("SELECT * FROM users where id=(?)", (task_id,))
+        receive_session_data = # сделать выборку пользователя
+        # сериализовать класс из БД
+        # если сессии нет, то надо сделать токен None
+        user =
+        logger.debug(f'The self.db_worker were initialized as: {db_file}')
+
+    def serialise_user_data(login_info):
+        COLUMNS = ['id', 'user_name', 'user_surname', 'password', 'reg_date']
+        user_dict_name = dict(zip(COLUMNS, login_info))
+        logger.debug(f'The user_dict_name: {user_dict_name}')
+        user_object = User(settings.DB_NAME)
+        user_object.make_user_object(**user_dict_name)
+        # print(user_object.__dict__)
+        return user_object
+
+
+    def del_expired_session(self):
+        pass
+
+    def gen_session_token(self):
+        self.token = secrets.token_hex()
+
+    def session_update(self):
+        self.gen_session_token()
+        self.expires_date = time.time() + settings.SESSION_LIVE
+
+    def is_expired(self):
+        if self.expires_date > time.time():
+            self.del_expired_session()
+            return True
+        self.session_update()
+        return False
+
+
+
 
 
 if __name__ == '__main__':

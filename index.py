@@ -1,9 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
+from idlelib.pyshell import HOST
+
 from jinja2 import Template
 import settings
 from urls import get_function
-from utils import get_static
+from utils import get_static, Redirect
 import logging
 
 logger = logging.getLogger('scheduler')
@@ -15,27 +17,46 @@ class SchedulerServer(BaseHTTPRequestHandler):
         logger.debug(f'The self for do_GET method - {self}')
         request = {'method': 'GET'}
         # print(self.path)
-        self.send_response(200)
         if '/static/' in self.path:
             results = get_static(self.path)
-            if '.js' in self.path:
-                self.send_header('Content-type', 'text/js')
-                self.end_headers()
-            elif '.css' in self.path:
-                self.send_header('Content-type', 'text/css')
-                self.end_headers()
-            # here should be processing of images
+            if results is None:
+                self.send_response(404)
+                results = '<H1>404</H1>'
             else:
-                logger.warning(f'Undefined type of file in path - {self.path}')
+                self.send_response(200)
+                if '.js' in self.path:
+                    self.send_header('Content-type', 'text/js')
+                    # self.send_header('Cookies', '')
+                    self.end_headers()
+                elif '.css' in self.path:
+                    self.send_header('Content-type', 'text/css')
+                    # self.send_header('Cookies', '')
+                    self.end_headers()
+                elif '.ico' in self.path:
+                    self.send_header('Content-type', 'image/x-icon')
+                    self.end_headers()
+                else:
+                    logger.warning(f'Undefined type of file in path - {self.path}')
+            self.wfile.write(bytes(results, 'utf-8'))
         else:
             controller, params = get_function(self.path)
-            results = controller(request, *params)  # as a HW to envelop in IF controler ELSE
-            logger.debug(f'The request will be sent with GET request with following parameters:controller-{controller}'
-                         f'params - {params}')
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-        logger.debug(f'The results will be sent with GET request - {results}')
-        self.wfile.write(bytes(results, 'utf-8'))
+            logger.debug(f'The controller is  - {controller}')
+            logger.debug(f'The params is  - {params}')
+            try:
+                if len(params) == 0:
+                    results = controller(request)
+                else:
+                    results = controller(request, *params)
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                # self.send_header('Cookies', '')
+                self.end_headers()
+                self.wfile.write(bytes(results, 'utf-8'))
+            except Exception as ex:
+                logger.error(
+                    f'The request will be sent with GET request with following parameters:controller-{controller}'
+                    f'params - {ex}')
+        logger.debug('The HTML successfully will be sent with GET request')
 
     def do_POST(self):
         logger.debug(f'The self for do_POST method - {self}')
@@ -55,10 +76,18 @@ class SchedulerServer(BaseHTTPRequestHandler):
         logger.debug(f'The following params will be sent with POST request: controller - {controller} and '
                      f'params - {params}')
         results = controller(request, *params)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(bytes(results, 'utf-8'))
-        logger.debug(f'The POST request is sent with headers')
+        if isinstance(results, Redirect):
+            self.send_response(301)
+            self.send_header('Location', f'http://{settings.HOST_NAME}:{settings.HOST_PORT}/{results.path}')
+            # self.send_header('Cookies', '')
+            self.end_headers()
+        else:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            # self.send_header('Cookies', '')
+            self.end_headers()
+            self.wfile.write(bytes(results, 'utf-8'))
+            logger.debug(f'The POST request is sent with headers')
 
 
 if __name__ == '__main__':
