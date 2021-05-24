@@ -2,7 +2,9 @@ from settings import SYMBOLS
 import re
 from actions import tasks, users
 import sys
+import logging
 
+logger = logging.getLogger('scheduler')
 sys.path.append('../')
 
 

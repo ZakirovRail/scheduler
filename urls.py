@@ -1,7 +1,11 @@
 from actions import *
+import logging
+
+logger = logging.getLogger('scheduler')
 
 urls_dict = [
-    {'pattern': '/main/', 'method': main_page, },
+    {'pattern': '/', 'method': main_page, },
+    # {'pattern': '/main/', 'method': main_page, },
     {'pattern': '/login/', 'method': users.login, },
     {'pattern': '/registration/', 'method': users.register, },
     {'pattern': '/create/', 'method': tasks.create_task_action, },
@@ -27,6 +31,7 @@ def get_function(path):
     for url in urls_dict:
         weight_tmp = 0
         list_patterns_path = url['pattern'].split('/')
+        logger.debug(f'The list_patterns_path is: {list_patterns_path}')
         if len(list_par) == len(list_patterns_path):
             for i in range(len(list_patterns_path)):
                 if list_patterns_path[i] == list_par[i]:
@@ -40,8 +45,9 @@ def get_function(path):
         for i in range(len(pattern_split)):
             if pattern_split[i] != list_par[i]:
                 params.append(list_par[i])
+        logger.debug(f'Params list is: {params}')
     except Exception as e:
-        print('Here an exception', e)
+        logger.critical(f'An exception while splitting the path {path}: ', e)
     return name, params
 
 

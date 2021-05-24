@@ -1,4 +1,6 @@
 import time
+import codecs
+import os.path
 import sys
 import hashlib
 import logging
@@ -41,11 +43,15 @@ def render_template(template, context={}):
 
 
 def get_static(path: str):
-    # print(path)
-    with open(path[1:], 'r') as static_file:
-        read_static_file = static_file.read()
-    return read_static_file
+    if os.path.exists(path[1:]):
+        with codecs.open(path[1:], 'r', encoding='UTF-8', errors='ignore') as static_file:
+            read_static_file = static_file.read()
+        return read_static_file
+    else:
+        return None
 
 
-def do_Redirect(self):
-    pass
+class Redirect:
+    def __init__(self, path, request):
+        self.path = path
+        self.request = request

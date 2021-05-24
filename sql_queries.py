@@ -21,6 +21,7 @@ create_users_table_command = """
 );
 """
 
+
 creat_admin_account_command = """
     INSERT INTO users(user_name, user_surname, password, reg_date)
     VALUES ('Mainaccount', 'Mainaccount', 'Mainpassword', datetime('now'));
@@ -86,3 +87,39 @@ data_seeding_user_command_3 = """
     INSERT INTO users (user_name, user_surname, password, reg_date, email)
     VALUES ('User_name_3', 'User_surname_3', 'Password_3', '2021-01-01', 'test_3@gmail.com');
 """
+
+
+
+create_users_session_table_command = """CREATE TABLE IF NOT EXISTS users_session (
+	id integer PRIMARY KEY AUTOINCREMENT,
+    user int NOT NULL,
+    auth_date datetime NOT NULL, 
+    expires_date datetime NOT NULL, 
+	token text NOT NULL
+);"""
+
+update_users_session_table_command = """CREATE TABLE IF NOT EXISTS users_session (
+	id integer PRIMARY KEY AUTOINCREMENT,
+    user int NOT NULL,
+    auth_date datetime NOT NULL, 
+    expires_date datetime NOT NULL, 
+	token text NOT NULL
+);"""
+
+
+delete_users_session_table_command = """CREATE TABLE IF NOT EXISTS users_session (
+	id integer PRIMARY KEY AUTOINCREMENT,
+    user int NOT NULL,
+    auth_date datetime NOT NULL, 
+    expires_date datetime NOT NULL, 
+	token text NOT NULL
+);"""
+
+
+insert_users_session_table_command = """CREATE TABLE IF NOT EXISTS users_session (
+	id integer PRIMARY KEY AUTOINCREMENT,
+    user int NOT NULL,
+    auth_date datetime NOT NULL, 
+    expires_date datetime NOT NULL, 
+	token text NOT NULL
+);"""

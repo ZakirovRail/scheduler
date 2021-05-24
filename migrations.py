@@ -1,5 +1,6 @@
 from ORM import DataWork
-from sql_queries import create_task_table_command, create_users_table_command, creat_admin_account_command, \
+from sql_queries import create_task_table_command, create_users_table_command, create_users_session_table_command,\
+    creat_admin_account_command, \
     data_seeding_task_command_1, data_seeding_task_command_2, data_seeding_task_command_3, data_seeding_user_command_1,\
     data_seeding_user_command_2, data_seeding_user_command_3
 
@@ -43,6 +44,19 @@ class CreatDB(BaseDB):
             logger.debug(f'The "Users" table were created')
         except Exception as e:
             logger.critical(f'The "Users" table WAS NOT created, the following error happened - {e}')
+            print('print from creat_users_table', e)
+
+    def create_user_session_table(self):
+        """
+        create a new DB SQLite for users session
+        :return:
+        """
+        try:
+            c = self.conn.cursor()
+            c.execute(create_users_session_table_command)
+            logger.debug(f'The "Users session" table were created')
+        except Exception as e:
+            logger.critical(f'The "Users session" table WAS NOT created, the following error happened - {e}')
             print('print from creat_users_table', e)
 
     def create_admin_account(self):
@@ -105,6 +119,7 @@ if __name__ == '__main__':
     create_db = CreatDB(settings.DB_NAME)
     create_db.create_tasks_table()
     create_db.creat_users_table()
+    create_db.create_user_session_table()
 
     seeding = DataSeeding(settings.DB_NAME)
     seeding.data_seeding_tasks()
