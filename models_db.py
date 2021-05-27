@@ -4,7 +4,7 @@ from abc import ABC
 from typing import List
 
 import settings
-from ORM import DataWork
+from ORM import DataWork, SessionsWork
 from tabulate import tabulate
 from db_main_com import BaseDB
 import logging
@@ -194,18 +194,21 @@ class UsersSession(BaseModel):
     expires_date: datetime
     token: str
 
-    """
-    
-    """
-
     def __init__(self, db_file, user):
-
         self.db_worker = DataWork(db_file)
-        c.execute("SELECT * FROM users where id=(?)", (task_id,))
-        receive_session_data = # сделать выборку пользователя
+        self.user = user
+        logger.debug(f'The self.db_worker were initialized as: {db_file} for UsersSession class ')
+        c = self.db_worker.conn.cursor()
+        c.execute("SELECT * FROM users_sessions where user=(?)", (self.user,))
+        receive_session_data = c.fetchall()
+        logger.debug(f'The following data about user"s sessions were received: {receive_session_data}')
+        if receive_session_data is None:
+            logger.debug(f'For user {self.user} will be set None value for session"s token ')
+            SessionsWork.update_session_token(user=self.user, token='None')
+
         # сериализовать класс из БД
         # если сессии нет, то надо сделать токен None
-        user =
+
         logger.debug(f'The self.db_worker were initialized as: {db_file}')
 
     def serialise_user_data(login_info):
@@ -223,10 +226,12 @@ class UsersSession(BaseModel):
 
     def gen_session_token(self):
         self.token = secrets.token_hex()
+        return self.token
 
     def session_update(self):
         self.gen_session_token()
         self.expires_date = time.time() + settings.SESSION_LIVE
+
 
     def is_expired(self):
         if self.expires_date > time.time():
@@ -234,9 +239,6 @@ class UsersSession(BaseModel):
             return True
         self.session_update()
         return False
-
-
-
 
 
 if __name__ == '__main__':
