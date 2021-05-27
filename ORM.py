@@ -133,5 +133,22 @@ class DataWork(BaseDB):
         return print(f'Deleted tasks from DB with the id - "{task_id}"')
 
 
+class SessionsWork(BaseDB):
+
+    def __init__(self, db_file):
+        super().__init__(db_file)
+
+    def update_session_token(self, user, token):
+        user = user
+        token = token
+        try:
+            c = self.conn.cursor()
+            c.execute("UPDATE users_sessions SET token = (?) where user = (?);", (token, user, ))
+            self.conn.commit()
+            logger.debug(f'The user"s session were updated: user = {user}')
+        except Exception as e:
+            logger.critical('Error for update_session_token method ', e)
+
+
 if __name__ == '__main__':
     pass
