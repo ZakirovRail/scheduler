@@ -5,10 +5,11 @@ from sql_queries import create_task_table_command, create_users_table_command, c
     data_seeding_user_command_2, data_seeding_user_command_3
 
 from db_main_com import BaseDB
+from models_db import UsersSession
 import settings
-import log_config
 import logging
 from utils import encode_password
+import time
 
 logger = logging.getLogger('scheduler')
 
@@ -114,6 +115,21 @@ class DataSeeding(BaseDB):
         except Exception as e:
             logger.critical('Failed data seeding for users table, error print from create_tasks_table', e)
 
+    def data_seeding_sessions(self):
+        user = 4
+        auth_date = time.time()
+        expires_time = auth_date + settings.SESSION_LIVE
+        token = UsersSession.gen_session_token(self)
+        data_to_seed = (user, auth_date, expires_time, token)
+        logger.debug(f'The following test data for sessions will be tried to seed to DB: {data_to_seed} ')
+        try:
+            c = self.conn.cursor()
+            c.execute("INSERT into users_session (user, auth_date, expires_date, token) VALUES (?,?,?,?)", (data_to_seed))
+            self.conn.commit()
+            logger.debug(f'Data seeding for the "Users" table were done')
+        except Exception as e:
+            logger.critical('Failed data seeding for users_sessions table. ', e)
+
 
 if __name__ == '__main__':
     create_db = CreatDB(settings.DB_NAME)
@@ -124,6 +140,7 @@ if __name__ == '__main__':
     seeding = DataSeeding(settings.DB_NAME)
     seeding.data_seeding_tasks()
     seeding.data_seeding_users()
+    seeding.data_seeding_sessions()
 
 
     # work_data = DataWork(settings.DB_NAME)
