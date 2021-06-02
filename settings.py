@@ -6,4 +6,4 @@ SYMBOLS = set(punctuation)
 
 HOST_NAME = 'localhost'
 HOST_PORT = 8888
-SESSION_LIVE = 900
+SESSION_LIVE = 9000

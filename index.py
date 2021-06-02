@@ -1,9 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from http import cookies
 import time
 from idlelib.pyshell import HOST
 
 from jinja2 import Template
 import settings
+from models_db import UsersSession
 from urls import get_function
 from utils import get_static, Redirect
 import logging
@@ -12,6 +14,7 @@ logger = logging.getLogger('scheduler')
 
 
 class SchedulerServer(BaseHTTPRequestHandler):
+    # C = cookies.SimpleCookie()
 
     def do_GET(self):
         logger.debug(f'The self for do_GET method - {self}')
@@ -39,6 +42,14 @@ class SchedulerServer(BaseHTTPRequestHandler):
                     logger.warning(f'Undefined type of file in path - {self.path}')
             self.wfile.write(bytes(results, 'utf-8'))
         else:
+            cookie = cookies.SimpleCookie(self.headers.get('Cookie'))
+            token_value = cookie['user-token'].value
+            user = UsersSession.get_by_token(token_value)  # In get_by_token надо получить или пользователя или None -
+            if user:
+                request['user'] = user
+
+
+
             controller, params = get_function(self.path)
             logger.debug(f'The controller is  - {controller}')
             logger.debug(f'The params is  - {params}')
@@ -57,6 +68,11 @@ class SchedulerServer(BaseHTTPRequestHandler):
                     f'The request will be sent with GET request with following parameters:controller-{controller}'
                     f'params - {ex}')
         logger.debug('The HTML successfully will be sent with GET request')
+
+
+
+
+
 
     def do_POST(self):
         logger.debug(f'The self for do_POST method - {self}')
@@ -78,9 +94,17 @@ class SchedulerServer(BaseHTTPRequestHandler):
         results = controller(request, *params)
         if isinstance(results, Redirect):
             self.send_response(301)
+            cookie = cookies.SimpleCookie()
+            cookie['user-token'] = results.request['session']
+            for morsel in cookie.values():
+                self.send_header("Set-Cookie", morsel.OutputString())
+
             self.send_header('Location', f'http://{settings.HOST_NAME}:{settings.HOST_PORT}/{results.path}')
-            # self.send_header('Cookies', '')
+            # self.C["user-token"] = results.request['session']
+            # self.send_header('Set-Cookie', f"user_token={results.request['session']}")
+
             self.end_headers()
+            # self.wfile.write(bytes(self.C.output(header="Cookie:"), 'utf-8'))
         else:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')

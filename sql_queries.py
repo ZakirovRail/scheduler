@@ -98,6 +98,7 @@ create_users_session_table_command = """CREATE TABLE IF NOT EXISTS users_session
 	token text NOT NULL
 );"""
 
+
 update_users_session_table_command = """CREATE TABLE IF NOT EXISTS users_session (
 	id integer PRIMARY KEY AUTOINCREMENT,
     user int NOT NULL,

@@ -1,4 +1,5 @@
-from models_db import User
+import settings
+from models_db import User, UsersSession
 from utils import encode_password, render_template, Redirect
 import logging
 import sys
@@ -18,10 +19,8 @@ def login(request):
         current_user = User.get_user_by_login(request['POST']['login'])
         print(current_user)
         if encode_password(request['POST']['password']) == current_user.password:
-            # Create a session for user
-            # In Cookies save created token
-            #
-            request['session'] = token
+            user_session = UsersSession(settings.DB_NAME, current_user)
+            request['session'] = user_session.token
             return Redirect('', request)
         print('Method POST')
     elif request['method'] == 'GET':
