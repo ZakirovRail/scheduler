@@ -4,7 +4,7 @@ from abc import ABC
 from typing import List
 
 import settings
-from ORM import DataWork
+from ORM import DataWork, SessionsWork
 from tabulate import tabulate
 from db_main_com import BaseDB
 import logging
@@ -193,53 +193,62 @@ class UsersSession(BaseModel):
     auth_date: str
     expires_date: datetime
     token: str
-
-    """
-    
-    """
+    session_work: SessionsWork
 
     def __init__(self, db_file, user):
-
+        self.session_work = SessionsWork(db_file)
         self.db_worker = DataWork(db_file)
-        c.execute("SELECT * FROM users where id=(?)", (task_id,))
-        receive_session_data = # сделать выборку пользователя
-        # сериализовать класс из БД
-        # если сессии нет, то надо сделать токен None
-        user =
+        self.user = user
+        logger.debug(f'The self.db_worker were initialized as: {db_file} for UsersSession class ')
+        c = self.db_worker.conn.cursor()
+        c.execute("SELECT * FROM users_session where user=(?)", (self.user.id, ))
+        receive_session_data = c.fetchall()
+        logger.debug(f'The following data about user"s sessions were received: {receive_session_data}')
+        if receive_session_data is None:
+            logger.debug(f'For user {self.user} will be set None value for session"s token ')
+            self.session_work.update_session_token(user_id=user.id)
+        else:
+            self.session_work.update_session_token(user_id=user.id, token=receive_session_data[-1][4])
         logger.debug(f'The self.db_worker were initialized as: {db_file}')
+        self.user = receive_session_data[-1][1]
+        self.expires_date = receive_session_data[-1][3]
+        self.token = receive_session_data[-1][4]
 
-    def serialise_user_data(login_info):
-        COLUMNS = ['id', 'user_name', 'user_surname', 'password', 'reg_date']
-        user_dict_name = dict(zip(COLUMNS, login_info))
-        logger.debug(f'The user_dict_name: {user_dict_name}')
-        user_object = User(settings.DB_NAME)
-        user_object.make_user_object(**user_dict_name)
-        # print(user_object.__dict__)
-        return user_object
 
+    # def serialise_user_data(login_info):  # as HW
+    #     COLUMNS = ['id', 'user_name', 'user_surname', 'password', 'reg_date']
+    #     user_dict_name = dict(zip(COLUMNS, login_info))
+    #     logger.debug(f'The user_dict_name: {user_dict_name}')
+    #     user_object = User(settings.DB_NAME)
+    #     user_object.make_user_object(**user_dict_name)
+    #     # print(user_object.__dict__)
+    #     return user_object
 
     def del_expired_session(self):
         pass
-
-    def gen_session_token(self):
-        self.token = secrets.token_hex()
-
-    def session_update(self):
-        self.gen_session_token()
-        self.expires_date = time.time() + settings.SESSION_LIVE
 
     def is_expired(self):
         if self.expires_date > time.time():
             self.del_expired_session()
             return True
-        self.session_update()
+        self.expires_date = self.session_work.update_session_token(self.user.id, token=self.token)
         return False
 
-
-
+    @staticmethod
+    def get_by_token(token_value):
+        pass
 
 
 if __name__ == '__main__':
-    User.get_user_by_login('John')
-    User.create_new_user('Mike2', 'Surface2', 'Secret3')
+    current_user_login = 'John'
+    current_password = 'Secret'
+    current_user = User.get_user_by_login(current_user_login)
+    if utils.encode_password(current_password) == current_user.password:
+        user_session = UsersSession(settings.DB_NAME, current_user)
+        token = user_session.token
+        print(token)
+        print(user_session.expires_date)
+    # User.get_user_by_login('John')
+    # User.create_new_user('Mike2', 'Surface2', 'Secret3')
+    pass
 

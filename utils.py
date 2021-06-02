@@ -1,3 +1,4 @@
+import secrets
 import time
 import codecs
 import os.path
@@ -55,3 +56,8 @@ class Redirect:
     def __init__(self, path, request):
         self.path = path
         self.request = request
+
+
+def gen_session_token():
+    token = secrets.token_hex()
+    return token

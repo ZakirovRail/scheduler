@@ -1,11 +1,15 @@
+import time
 
 from tabulate import tabulate
 
+import settings
 from db_main_com import BaseDB
 from sql_queries import COLLUMNS, delete_all_tasks_command, show_completed_tasks_command, \
     show_all_active_tasks_command, show_all_users_tasks_command, creat_new_task_command, show_task_info_command
 
 import logging
+
+from utils import gen_session_token
 
 logger = logging.getLogger('scheduler')
 
@@ -133,5 +137,29 @@ class DataWork(BaseDB):
         return print(f'Deleted tasks from DB with the id - "{task_id}"')
 
 
+class SessionsWork(BaseDB):
+
+    def __init__(self, db_file):
+        super().__init__(db_file)
+
+    def update_session_token(self, user_id, token=None):
+        if token is None:
+            token = gen_session_token()
+        time_to_live = time.time() + settings.SESSION_LIVE
+        try:
+            c = self.conn.cursor()
+            c.execute("UPDATE users_session SET token = (?), expires_date = (?) where user = (?);",
+                      (token, time_to_live, user_id, ))
+            self.conn.commit()
+            logger.debug(f'The user"s session were updated: user = {user_id}')
+        except Exception as e:
+            logger.critical('Error for update_session_token method ', e)
+        finally:
+            return time_to_live
+
+
 if __name__ == '__main__':
-    pass
+    test_session = SessionsWork(settings.DB_NAME)
+    time_to_check = test_session.update_session_token(4, token='48548725a9bfbe25dd6ed6914f2e6f9a7b8ff7d6db9f809369271f3da69f6511')
+    print(time_to_check)
+

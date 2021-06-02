@@ -1,0 +1,38 @@
+1. sql_queries for session table - DONE
+2. Complete class UsersSession(BaseModel)
+3. def do_GET(self)/def do_POST(self) - add cookies
+4. Add logging
+5. Create an HTML page for a user with his tasks
+
+
+
+1. Complete - def serialise_user_data(login_info)
+
+Questions:
+1.
+2.
+2.
+
+
+
+Как хранить сессию?
+1. Для каждого пользователя (авторизованного или нет) назначать уникальный токен
+2. После смены уровня привелегий, или изменения сессии изменять токен на новый
+3. Задать время жизни токена с автообновлением
+4. Проверять, что у каждого авторизованного пользователя только одна активная сессия
+
+
+Notes (Oleg):
+1. Imports inside the project
+2. %s
+
+To Do:
+1. Rewrite DB - link ID and user_name from tables "tasks" and "users"
+
+
+Ответы:
+3. Импорты - круговые импорты большая и частая проблема. Но и следить за названием файлов
+
+
+
+ohmyz.sh - about plugin
