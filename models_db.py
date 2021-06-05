@@ -214,16 +214,6 @@ class UsersSession(BaseModel):
         self.expires_date = receive_session_data[-1][3]
         self.token = receive_session_data[-1][4]
 
-
-    # def serialise_user_data(login_info):  # as HW
-    #     COLUMNS = ['id', 'user_name', 'user_surname', 'password', 'reg_date']
-    #     user_dict_name = dict(zip(COLUMNS, login_info))
-    #     logger.debug(f'The user_dict_name: {user_dict_name}')
-    #     user_object = User(settings.DB_NAME)
-    #     user_object.make_user_object(**user_dict_name)
-    #     # print(user_object.__dict__)
-    #     return user_object
-
     def del_expired_session(self):
         pass
 
@@ -236,7 +226,20 @@ class UsersSession(BaseModel):
 
     @staticmethod
     def get_by_token(token_value):
-        pass
+        db_worker = DataWork(settings.DB_NAME)
+        c = db_worker.conn.cursor()
+        c.execute("SELECT token FROM users_session")
+        list_tokens = c.fetchall()
+        if list_tokens is None:
+            return None
+        else:
+            user_token = list_tokens[-1][-1]   # уточнить как более изящно получить str значение
+            print('user_token is ', user_token)
+            print(type(user_token))
+            c.execute("SELECT user FROM users_session where token=(?)", (str(user_token), ))
+            userid = c.fetchall()
+            print('userid is ', userid)
+        return int(userid[0][0])   # уточнить как более изящно получить извлечь значение
 
 
 if __name__ == '__main__':
