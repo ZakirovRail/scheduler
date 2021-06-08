@@ -229,17 +229,15 @@ class UsersSession(BaseModel):
         db_worker = DataWork(settings.DB_NAME)
         c = db_worker.conn.cursor()
         c.execute("SELECT token FROM users_session")
-        list_tokens = c.fetchall()
+        list_tokens = c.fetchone()
         if list_tokens is None:
             return None
         else:
-            user_token = list_tokens[-1][-1]   # уточнить как более изящно получить str значение
-            print('user_token is ', user_token)
-            print(type(user_token))
+            user_token = list_tokens[-1]  # уточнить как более изящно получить str значение
+            # try except
             c.execute("SELECT user FROM users_session where token=(?)", (str(user_token), ))
-            userid = c.fetchall()
-            print('userid is ', userid)
-        return int(userid[0][0])   # уточнить как более изящно получить извлечь значение
+            userid = c.fetchone()
+        return int(userid[0])   # уточнить как более изящно получить извлечь значение
 
 
 if __name__ == '__main__':

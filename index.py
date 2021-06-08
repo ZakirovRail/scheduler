@@ -43,24 +43,35 @@ class SchedulerServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes(results, 'utf-8'))
         else:
             cookie = cookies.SimpleCookie(self.headers.get('Cookie'))
-            token_value = cookie['user-token'].value
-            user = UsersSession.get_by_token(token_value)  # In get_by_token надо получить или пользователя или None -
-            if user:
-                request['user'] = user
-
-
-
+            token_value = ''
+            if 'user-token' in cookie:
+                token_value = cookie['user-token'].value
+                user = UsersSession.get_by_token(token_value)  # In get_by_token надо получить или пользователя или None -
+                if user:
+                    request['user'] = user
+            # there is no ELSE block, because if no else, that means we have an unanimous user
             controller, params = get_function(self.path)
             logger.debug(f'The controller is  - {controller}')
             logger.debug(f'The params is  - {params}')
             try:
-                if len(params) == 0:
-                    results = controller(request)
+                if controller is None:
+                    self.send_response(404)
+                    results = '<H1>404</H1>'
                 else:
-                    results = controller(request, *params)
-                self.send_response(200)
+                    if len(params) == 0:
+                        results = controller(request)
+                    else:
+                        results = controller(request, *params)
+                    if isinstance(results, Redirect):
+                        self.send_response(301)
+                        self.send_header('Location', f'http://{settings.HOST_NAME}:{settings.HOST_PORT}/{results.path}')
+                    else:
+                        self.send_response(200)
+                cookie = cookies.SimpleCookie()
+                cookie['user-token'] = token_value
+                for morsel in cookie.values():
+                    self.send_header("Set-Cookie", morsel.OutputString())
                 self.send_header('Content-type', 'text/html')
-                # self.send_header('Cookies', '')
                 self.end_headers()
                 self.wfile.write(bytes(results, 'utf-8'))
             except Exception as ex:
@@ -68,11 +79,6 @@ class SchedulerServer(BaseHTTPRequestHandler):
                     f'The request will be sent with GET request with following parameters:controller-{controller}'
                     f'params - {ex}')
         logger.debug('The HTML successfully will be sent with GET request')
-
-
-
-
-
 
     def do_POST(self):
         logger.debug(f'The self for do_POST method - {self}')
@@ -88,6 +94,12 @@ class SchedulerServer(BaseHTTPRequestHandler):
             data_dict[temp[0]] = temp[1]
         request = {'method': 'POST', 'POST': data_dict}
         logger.debug(f'The POST request is prepared - {request}')
+        cookie = cookies.SimpleCookie(self.headers.get('Cookie'))  # move to utils file
+        if 'user-token' in cookie:
+            token_value = cookie['user-token'].value
+            user = UsersSession.get_by_token(token_value)  # In get_by_token надо получить или пользователя или None -
+            if user:
+                request['user'] = user
         controller, params = get_function(self.path)
         logger.debug(f'The following params will be sent with POST request: controller - {controller} and '
                      f'params - {params}')
@@ -98,13 +110,8 @@ class SchedulerServer(BaseHTTPRequestHandler):
             cookie['user-token'] = results.request['session']
             for morsel in cookie.values():
                 self.send_header("Set-Cookie", morsel.OutputString())
-
             self.send_header('Location', f'http://{settings.HOST_NAME}:{settings.HOST_PORT}/{results.path}')
-            # self.C["user-token"] = results.request['session']
-            # self.send_header('Set-Cookie', f"user_token={results.request['session']}")
-
             self.end_headers()
-            # self.wfile.write(bytes(self.C.output(header="Cookie:"), 'utf-8'))
         else:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
