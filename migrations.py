@@ -8,7 +8,7 @@ from db_main_com import BaseDB
 from models_db import UsersSession
 import settings
 import logging
-from utils import encode_password
+from utils import encode_password, gen_session_token
 import time
 
 logger = logging.getLogger('scheduler')
@@ -116,19 +116,20 @@ class DataSeeding(BaseDB):
             logger.critical('Failed data seeding for users table, error print from create_tasks_table', e)
 
     def data_seeding_sessions(self):
-        user = 4
-        auth_date = time.time()
-        expires_time = auth_date + settings.SESSION_LIVE
-        token = UsersSession.gen_session_token(self)
-        data_to_seed = (user, auth_date, expires_time, token)
-        logger.debug(f'The following test data for sessions will be tried to seed to DB: {data_to_seed} ')
-        try:
-            c = self.conn.cursor()
-            c.execute("INSERT into users_session (user, auth_date, expires_date, token) VALUES (?,?,?,?)", (data_to_seed))
-            self.conn.commit()
-            logger.debug(f'Data seeding for the "Users" table were done')
-        except Exception as e:
-            logger.critical('Failed data seeding for users_sessions table. ', e)
+        users_list = [4, 5, 6, 7, 8]
+        for user in users_list:
+            auth_date = time.time()
+            expires_time = auth_date + settings.SESSION_LIVE
+            token = gen_session_token()
+            data_to_seed = (user, auth_date, expires_time, token)
+            logger.debug(f'The following test data for sessions will be tried to seed to DB: {data_to_seed} ')
+            try:
+                c = self.conn.cursor()
+                c.execute("INSERT into users_session (user, auth_date, expires_date, token) VALUES (?,?,?,?)", (data_to_seed))
+                self.conn.commit()
+                logger.debug(f'Data seeding for the "Users" table were done')
+            except Exception as e:
+                logger.critical('Failed data seeding for users_sessions table. ', e)
 
 
 if __name__ == '__main__':

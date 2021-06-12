@@ -31,12 +31,10 @@ def show_action(request):
     """
     list_tasks = []
     try:
-        print(request)
         logger.debug(f'The "request" is {request}')
         if 'user' in request:
             list_tasks = work.show_all_tasks(request['user'])
             logger.debug(f'The "show" command were selected')
-            print(list_tasks)
     except Exception as e:
         logger.error(f'Error happened during showing all records - {str(e)}')
         logger.error(f'Error happened during showing all records - {repr(e)}')

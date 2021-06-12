@@ -17,7 +17,7 @@ urls_dict = [
     {'pattern': '/show_info/<id>/', 'method': tasks.show_info_action, },
     {'pattern': '/edit/<id>/', 'method': tasks.edit_action, },
     {'pattern': '/delete/<id>/', 'method': tasks.delete_action, },
-    # {'pattern': 'logout/', 'method': , },
+    # {'pattern': '/logout/', 'method': users.logout, },
 ]
 
 path_example = 'main/'

@@ -1,16 +1,3 @@
-1.get_by_token - complete this method - DONE (# уточнить как более изящно получить str значение)
-2. Перенести в POST запрос проверку на 
-cookie = cookies.SimpleCookie(self.headers.get('Cookie'))
-            token_value = cookie['user-token'].value
-            user = UsersSession.get_by_token(token_value)  # In get_by_token надо получить или пользователя или None -
-            if user:
-                request['user'] = user
-
-3. логирование - убрать из консоли логи
-3.5 - сделать Logout- как это сделать???
-4. Начать переделывать actions для задач под архитектуру текущую 
-
-
 HW
 1. utils.py - make TRIP of slashes from path on 26 and 33 strings
 2. templates.html - make like {% extends 'base.html' %}
@@ -18,6 +5,11 @@ HW
 4. Add in ACTION a new action - "edit" to open task in a new window
 it will require join functionality from CLOSE (actions.close_task) and LOGIN (actions.users) methods - 
 to join redirects and POST - ask Oleg in case of problems
+3. логирование - убрать из консоли логи - Убрал отображение списка задач
+3.5 - сделать Logout- как это сделать??? если вышел, то его надо перекидывать на страницу авторизации и убивать сессию-удалять токен
+4. Начать переделывать actions для задач под архитектуру текущую 
+5. Если пользователь авторизован, то показать страницу сон писком задач. Если нет, то не отображать ни на одной странице ссылку на это
+6. если БД с сессиями пустая, то не происходит автоматического добавления новой сессии в БД
 
 
 
@@ -29,9 +21,13 @@ To Do:
 1. Rewrite DB - link ID and user_name from tables "tasks" and "users"
 
 
-Ответы:
-3. Импорты - круговые импорты большая и частая проблема. Но и следить за названием файлов
-
-
 
 ohmyz.sh - about plugin
+
+
+
+1.Expanded data seeding for users sessions (migrations -> def data_seeding_sessions)
+2.Added a method for getting a list of users_id (ORM -> SessionsWork -> get_list_users_id)
+3.Added a method for deleting users_id session (ORM -> SessionsWork -> delete_session)
+
+

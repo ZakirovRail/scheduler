@@ -34,10 +34,6 @@ def encode_password(password):
 def render_template(template, context={}):
     with open(template, 'r') as f:
         template_contain = f.read()
-    # template = Template(template_contain)
-    # return template.render(**context)
-    # rtemplate = Environment(loader=BaseLoader).from_string(template_contain)
-    # data = rtemplate.render(**context)
     template = Environment(loader=FileSystemLoader("templates/")).from_string(template_contain)
     html_str = template.render(**context)
     return html_str

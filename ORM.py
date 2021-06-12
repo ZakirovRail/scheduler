@@ -64,8 +64,8 @@ class DataWork(BaseDB):
             logger.debug(f'The list of tasks is the following: {list_tasks}')
         except Exception as e:
             logger.critical('print from show_all_tasks', e)
-        if need_print:
-            print(tabulate(list_tasks, headers=COLLUMNS), '\n')
+        # if need_print:
+        #     print(tabulate(list_tasks, headers=COLLUMNS), '\n')
         return list_tasks
 
     def all_active_tasks(self, user_id: str):
@@ -157,9 +157,36 @@ class SessionsWork(BaseDB):
         finally:
             return time_to_live
 
+    def get_list_users_id(self):
+        c = self.conn.cursor()
+        c.execute("SELECT user from users_session;")
+        list_ids = c.fetchall()
+        list_users_id = [item for t in list_ids for item in t]
+        print(f'List of users is the following - {list_users_id}')
+        return list_users_id
+
+    def delete_session(self, user_id):
+        list_users_id = self.get_list_users_id()
+        if user_id in list_users_id:
+            try:
+                c = self.conn.cursor()
+                c.execute("DELETE from users_session where user = (?);", (user_id, ))
+                self.conn.commit()
+                logger.debug(f'The session were deleted for user_id = {user_id}')
+            except Exception as e:
+                logger.error(f'Error during deleting users sessions for user_id - {user_id} from DB method ', e)
+        else:
+            print('Something is wrong during deleting a users session')
+
 
 if __name__ == '__main__':
+    """
+    Data seesing is located in migration.py file - run it before running this ORM.py file 
+    """
     test_session = SessionsWork(settings.DB_NAME)
-    time_to_check = test_session.update_session_token(4, token='48548725a9bfbe25dd6ed6914f2e6f9a7b8ff7d6db9f809369271f3da69f6511')
-    print(time_to_check)
+    # time_to_check = test_session.update_session_token(4, token='48548725a9bfbe25dd6ed6914f2e6f9a7b8ff7d6db9f809369271f3da69f6511')
+    # print(time_to_check)
+    print(test_session.get_list_users_id())
+    test_session.delete_session(4)
+    print(test_session.get_list_users_id())
 

@@ -239,6 +239,13 @@ class UsersSession(BaseModel):
             userid = c.fetchone()
         return int(userid[0])   # уточнить как более изящно получить извлечь значение
 
+    # def generate_new_token(self):
+    #     token = utils.gen_session_token()
+    #     db_worker = DataWork(settings.DB_NAME)
+    #
+    #     c = db_worker.conn.cursor()
+    #     c.execute("SELECT token FROM users_session")
+
 
 if __name__ == '__main__':
     current_user_login = 'John'
