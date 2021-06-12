@@ -11,7 +11,6 @@ cookie = cookies.SimpleCookie(self.headers.get('Cookie'))
 4. Начать переделывать actions для задач под архитектуру текущую 
 
 
-
 HW
 1. utils.py - make TRIP of slashes from path on 26 and 33 strings
 2. templates.html - make like {% extends 'base.html' %}
