@@ -3,6 +3,7 @@ import sys
 from ORM import DataWork
 from models_db import Task, User
 from settings import DB_NAME
+from utils import render_template, Redirect
 
 sys.path.append('../')
 
@@ -22,13 +23,30 @@ def create_task_action(current_user):
         logger.critical('Print error happened during creating a new task', e)
 
 
-def show_action(current_user: User):
+def show_action(request):
+    """
+    request will contain user if user is authorized
+    :param request:
+    :return:
+    """
+    list_tasks = []
     try:
-        list_tasks = work.show_all_tasks(current_user.user_name)
-        logger.debug(f'The "show" command were selected')
+        print(request)
+        logger.debug(f'The "request" is {request}')
+        if 'user' in request:
+            list_tasks = work.show_all_tasks(request['user'])
+            logger.debug(f'The "show" command were selected')
+            print(list_tasks)
     except Exception as e:
         logger.error(f'Error happened during showing all records - {str(e)}')
         logger.error(f'Error happened during showing all records - {repr(e)}')
+    return render_template('templates/task_list.html', {'tasks': list_tasks})
+
+
+def close_task(request, task_id):
+    new_status = 'Closed'
+    work.set_status(int(task_id), new_status)
+    return Redirect('show/', request)
 
 
 def active_action(current_user: User):

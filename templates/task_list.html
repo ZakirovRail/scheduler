@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>List of tasks</h3>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <th>ID</th>
+                    <th>TITLE</th>
+                    <th>DESC</th>
+                    <th>DEADLINE</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                    </thead>
+                    <tbody>
+                    {% for item in tasks %}
+                    <tr>
+                        <td>{{item.0}}</td>
+                        <td>{{item.1}}</td>
+                        <td>{{item.2}}</td>
+                        <td>{{item.5}}</td>
+                        <td>{{item.7}}</td>
+                        <td>
+                            <a href="">View</a><br>
+                            <a href="/close/{{item.0}}/">Close</a><br>
+                            <a href="">Delete</a><br>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
